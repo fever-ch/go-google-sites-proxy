@@ -1,0 +1,6 @@
+port: 9080
+sites:
+  - ref: go-gsites-proxy
+    host: localhost:9080
+    language: en-GB,en;q=0.8,en-US;q=0.6,fr;q=0.4
+    description: Go Google Sites Proxy
