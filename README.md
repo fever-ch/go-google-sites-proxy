@@ -45,6 +45,18 @@ docker pull feverch/go-google-sites-proxy
 docker run -d --name containerName -v my-config-folder:/etc/ggsp/ -p 80:8080 feverch/go-google-sites-proxy
 ```
 
+#### Build your own image with Docker
+```bash
+docker build .
+```
+
+
+#### Build your own image with Rocker
+```bash
+rocker build .
+```
+This project is migrating to [Rocker](https://github.com/grammarly/rocker) for builds. It allows the creation of much slimmer images (no layered images with all compilation/build steps). 
+
 ### HTTPS, HTTP/2.0 support
 
 `Go Google Sites Proxy` doesn't support yet, and might never, HTTPS and HTTP/2.0 protocols. Since these protocols are nowadays *a must*, but on the other hand, they require fine tuning, a clever approach would be to use [NGINX](https://www.nginx.org) [(docker image)](https://hub.docker.com/_/nginx/) or to use a well-known service such that [CloudFlare](https://www.cloudflare.com). 

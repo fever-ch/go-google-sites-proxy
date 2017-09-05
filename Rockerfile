@@ -1,0 +1,16 @@
+FROM golang
+
+ADD . /go/src/go-google-sites-proxy
+WORKDIR /go/src/go-google-sites-proxy
+RUN go get; CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo
+EXPORT /go/src/go-google-sites-proxy/go-google-sites-proxy /go-google-sites-proxy
+
+
+
+FROM alpine
+
+IMPORT /go-google-sites-proxy /bin/go-google-sites-proxy
+RUN apk add --no-cache ca-certificates; update-ca-certificates
+ENTRYPOINT /bin/go-google-sites-proxy /etc/ggsp/config.yaml
+TAG feverch/go-google-sites-proxy
+EXPOSE 9080
