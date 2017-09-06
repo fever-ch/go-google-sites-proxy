@@ -24,6 +24,11 @@ sites:
     description: Go Google Sites Proxy  # a short description of this site
 ``` 
 
+## To-Do
+- add cache for the retrieved content
+- add a proper logging mechanism
+
+
 ### Run it on any architecture supported by Golang
 
 Build a Linux static binary from Linux, OSX, Microsoft Windows, ... (cross-compilation)
