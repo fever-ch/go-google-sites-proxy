@@ -16,7 +16,7 @@ This software is already used *in production*. The [website of this project](htt
 ## Config file format
 
 ```yaml
-port: 8080
+port: 9080
 sites:
   - ref: go-gsites-proxy                # the name of the website on Google Sites
     host: ggsp.fever.ch                 # the vhost linked with the current site
@@ -42,7 +42,7 @@ Let's assume that the configuration file (```config.yaml```) is in ```my-config-
 
 ```bash
 docker pull feverch/go-google-sites-proxy
-docker run -d --name containerName -v my-config-folder:/etc/ggsp/ -p 80:8080 feverch/go-google-sites-proxy
+docker run -d --name containerName -v my-config-folder:/etc/ggsp/ -p 80:9080 feverch/go-google-sites-proxy
 ```
 
 #### Build your own image with Docker
