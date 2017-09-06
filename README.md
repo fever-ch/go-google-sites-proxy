@@ -42,12 +42,7 @@ Let's assume that the configuration file (```config.yaml```) is in ```my-config-
 
 ```bash
 docker pull feverch/go-google-sites-proxy
-docker run -d --name containerName -v my-config-folder:/etc/ggsp/ -p 80:9080 feverch/go-google-sites-proxy
-```
-
-#### Build your own image with Docker
-```bash
-docker build .
+docker run -d --name containerName -v /full-path/to/my-config-folder:/etc/ggsp/ -p 80:9080 feverch/go-google-sites-proxy
 ```
 
 
@@ -55,7 +50,9 @@ docker build .
 ```bash
 rocker build .
 ```
-This project is migrating to [Rocker](https://github.com/grammarly/rocker) for builds. It allows the creation of much slimmer images (no layered images with all compilation/build steps). 
+This project migrated to [Rocker](https://github.com/grammarly/rocker) for builds. It allows the creation of much slimmer images (no layered images with all compilation/build steps).
+
+This change has no impact for users of the image (no need to install Rocker). 
 
 ### HTTPS, HTTP/2.0 support
 
