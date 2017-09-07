@@ -1,4 +1,5 @@
 port: 9080
+index: True
 sites:
   - ref: go-gsites-proxy
     host: localhost:9080

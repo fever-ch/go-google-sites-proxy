@@ -6,13 +6,13 @@ package main
 
 import (
 	"os"
-	"log"
 	"io/ioutil"
 
 	"gopkg.in/yaml.v2"
 
 	"go-google-sites-proxy/proxy"
 	"go-google-sites-proxy/config"
+	log "github.com/sirupsen/logrus"
 )
 
 // Load configuration stored in filename (yaml format)
@@ -36,16 +36,14 @@ func main() {
 		log.Fatal("Cmd: " + os.Args[0] + " config-file")
 	}
 
-	cfg, err := loadConfig(os.Args[1])
-	proxy := proxy.NewCheapProxy(cfg)
+	if cfg, err := loadConfig(os.Args[1]); err != nil {
+		log.Fatal("Unable to load configuration: %v", err)
+	} else {
+		proxy := proxy.NewCheapProxy(cfg)
 
-	if err != nil {
-		log.Fatal(err)
+		if err = proxy.Start(); err != nil {
+			log.Fatal("Unable to start proxy: %v", err)
+		}
 	}
 
-
-	err = proxy.Start()
-	if err != nil {
-		log.Fatal(err)
-	}
 }

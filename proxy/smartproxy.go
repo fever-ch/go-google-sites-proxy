@@ -41,7 +41,7 @@ func NewCheapProxy(configuration config.Configuration) *SmartProxy {
 			if err != nil {
 				return err
 			}
-			select {}
+			select {} // wait forever
 		},
 	}
 }
