@@ -10,7 +10,7 @@ EXPORT /go/src/go-google-sites-proxy/go-google-sites-proxy /go-google-sites-prox
 FROM alpine
 
 IMPORT /go-google-sites-proxy /bin/go-google-sites-proxy
-RUN apk add --no-cache ca-certificates; update-ca-certificates
+RUN apk add --no-cache ca-certificates
 ENTRYPOINT /bin/go-google-sites-proxy /etc/ggsp/config.yaml
 TAG feverch/go-google-sites-proxy
 EXPOSE 9080
