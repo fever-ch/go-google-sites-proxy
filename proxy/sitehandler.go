@@ -99,21 +99,24 @@ func GetSiteHandler(site *config.Site) *func(responseWriter http.ResponseWriter,
 	// The actual handler that will get the request for this site
 	handleRequest := func(responseWriter http.ResponseWriter, request *http.Request) {
 
-		var code int
-		switch request.Method {
-		case "GET":
-			gsitesResponse, err := retrieve(request.URL.Path)
-			if err != nil {
-				errorPage(502, "Bad gateway", "Unable to retrieve page on remote server", responseWriter)
-				break
+		if strings.HasPrefix(request.URL.Path, "/_/") {
+			responseWriter.WriteHeader(200)
+		} else {
+			var code int
+			switch request.Method {
+			case "GET":
+				gsitesResponse, err := retrieve(request.URL.Path)
+				if err != nil {
+					errorPage(502, "Bad gateway", "Unable to retrieve page on remote server", responseWriter)
+					break
+				}
+				page := respToPage(gsitesResponse)
+				code = renderPage(page, responseWriter, strings.Contains(request.Header.Get("Content-Encoding"), "gzip"))
+
+			default:
 			}
-			page := respToPage(gsitesResponse)
-			code = renderPage(page, responseWriter, strings.Contains(request.Header.Get("Content-Encoding"), "gzip"))
-
-		default:
+			log.Info(fmt.Sprintf("\"%s %s %s\" %s %d", request.Method, request.URL, request.Proto, request.RemoteAddr, code))
 		}
-		log.Info(fmt.Sprintf("\"%s %s %s\" %s %d", request.Method, request.URL, request.Proto, request.RemoteAddr, code))
 	}
-
 	return &handleRequest
 }
