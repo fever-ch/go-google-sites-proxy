@@ -115,7 +115,14 @@ func GetSiteHandler(site *config.Site) *func(responseWriter http.ResponseWriter,
 
 			default:
 			}
-			log.Info(fmt.Sprintf("\"%s %s %s\" %s %d", request.Method, request.URL, request.Proto, request.RemoteAddr, code))
+			var ip string
+			if site.IPHeader == "" {
+				ip = request.RemoteAddr
+			} else {
+				ip = request.Header.Get(site.IPHeader)
+			}
+
+			log.Info(fmt.Sprintf("%s \"%s %s %s\" %s %s %d", site.Host, request.Method, request.URL, request.Proto, ip, request.UserAgent(), code))
 		}
 	}
 	return &handleRequest

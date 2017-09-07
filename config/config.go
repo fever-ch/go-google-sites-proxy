@@ -11,6 +11,7 @@ type Site struct {
 	Redirects   []string `yaml:"redirects"`
 	Language    string `yaml:"language"`
 	KeepLinks   bool `yaml:"keeplinks"`
+	IPHeader string `yaml:ipheader`
 }
 
 type Configuration struct {
