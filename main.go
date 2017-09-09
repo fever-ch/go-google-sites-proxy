@@ -13,6 +13,7 @@ import (
 	"go-google-sites-proxy/proxy"
 	"go-google-sites-proxy/config"
 	log "github.com/sirupsen/logrus"
+	"path/filepath"
 )
 
 // Load configuration stored in filename (yaml format)
@@ -36,7 +37,10 @@ func main() {
 		log.Fatal("Cmd: " + os.Args[0] + " config-file")
 	}
 
-	if cfg, err := loadConfig(os.Args[1]); err != nil {
+	confFile := os.Args[1]
+	os.Chdir(filepath.Dir(confFile))
+
+	if cfg, err := loadConfig(confFile); err != nil {
 		log.Fatal("Unable to load configuration: %v", err)
 	} else {
 		proxy := proxy.NewCheapProxy(cfg)
