@@ -41,7 +41,7 @@ func main() {
 	os.Chdir(filepath.Dir(confFile))
 
 	if cfg, err := loadConfig(confFile); err != nil {
-		log.Fatal("Unable to load configuration: %v", err)
+		log.WithError(err).Fatal("Unable to load configuration")
 	} else {
 		proxy := proxy.NewCheapProxy(cfg)
 
