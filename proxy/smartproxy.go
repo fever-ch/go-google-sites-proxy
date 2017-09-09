@@ -10,34 +10,42 @@ import (
 	"net/http"
 )
 
+type Context struct {
+	configuration config.Configuration
+	sites         map[string]*func(responseWriter http.ResponseWriter, request *http.Request)
+}
+
 func NewCheapProxy(configuration config.Configuration) *SmartProxy {
 
-	sites := make(map[string]*func(responseWriter http.ResponseWriter, request *http.Request))
+	buildContext := func(configuration config.Configuration) Context {
+		context := Context{
+			configuration,
+			make(map[string]*func(responseWriter http.ResponseWriter, request *http.Request))}
 
-	addSite := func(site *config.Site) {
-		sites[site.Host] = GetSiteHandler(site)
-	}
-
-	for _, e := range configuration.Sites {
-		addSite(e)
-		for _, f := range e.Redirects {
-			addRedirect(f, e.Host)
+		for _, e := range configuration.Sites {
+			context.sites[e.Host] = GetSiteHandler(e)
+			for _, f := range e.Redirects {
+				addRedirect(f, e.Host)
+			}
 		}
+		return context
 	}
+
+	context := buildContext(configuration)
 
 	handler := func(responseWriter http.ResponseWriter, request *http.Request) {
-		siteHandler := sites[request.Host]
+		siteHandler := context.sites[request.Host]
 		if siteHandler != nil {
 			(*siteHandler)(responseWriter, request)
-		} else if configuration.Index {
-			(*getIndex(configuration))(responseWriter, request)
+		} else if context.configuration.Index {
+			(*getIndex(context.configuration))(responseWriter, request)
 		}
 	}
 
 	return &SmartProxy{
 		Start: func() error {
 			http.HandleFunc("/", handler)
-			err := http.ListenAndServe(":"+strconv.Itoa(configuration.Port), nil)
+			err := http.ListenAndServe(":"+strconv.Itoa(context.configuration.Port), nil)
 			if err != nil {
 				return err
 			}
@@ -45,7 +53,6 @@ func NewCheapProxy(configuration config.Configuration) *SmartProxy {
 		},
 	}
 }
-
 
 type SmartProxy struct {
 	Start func() error
