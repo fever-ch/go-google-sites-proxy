@@ -29,17 +29,21 @@ type SiteContext struct {
 func GetSiteHandler(site *config.Site) *func(responseWriter http.ResponseWriter, request *http.Request) {
 	siteContext := &SiteContext{}
 
-	if (site.FaviconPath != "") {
-		buf, _ := ioutil.ReadFile(site.FaviconPath)
-		h := make(map[string](string))
-		h["Content-Type"] = "image/x-icon"
-		siteContext.Favicon = &Page{200, h, blob.NewRawBlob(buf), true}
+	if site.FaviconPath != "" {
+		buf, err := ioutil.ReadFile(site.FaviconPath)
+		if err == nil {
+			h := make(map[string](string))
+			h["Content-Type"] = "image/x-icon"
+			siteContext.Favicon = &Page{200, h, blob.NewRawBlob(buf), true}
+		}else{
+			log.WithError(err).Warning(fmt.Sprintf("Failed to load favicon for site %v",site.Host))
+		}
 	}
 
 	var htmlRx, _ = regexp.Compile("text/html($|;.*)")
 
 	googleSitePathRoot := "https://sites.google.com/view/" + site.Ref
-	patcher := newPatcher(site,siteContext)
+	patcher := newPatcher(site, siteContext)
 
 	retrieve := func(url string) (*http.Response, error) {
 		var netClient = &http.Client{
