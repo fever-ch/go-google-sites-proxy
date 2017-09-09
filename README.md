@@ -9,6 +9,10 @@ Fall 2016, Google introduced New Google Sites, it's a very nice product, it allo
 
 Sadly, Google [at least at the time this text is being written, [August 24th, 2017] doesn't support the usage of a custom domain name yet [[link]](https://productforums.google.com/forum/#!topic/sites/44_WTQ44MJk).
 
+## Features
+- Works with any domain!
+- Support for custom favicon
+
 ## Try it!
 
 This software is already used *in production*. The [website of this project](https://ggsp.fever.ch/) also using it!
@@ -25,11 +29,11 @@ sites:
 ``` 
 
 ## To-Do
+
 - add cache for the retrieved content
-- add a proper logging mechanism
 
 
-### Run it on any architecture supported by Golang
+## Run it on any architecture supported by Golang
 
 Build a Linux static binary from Linux, OSX, Microsoft Windows, ... (cross-compilation)
 
@@ -41,7 +45,7 @@ Then run it:
 nohup go-google-sites-proxy my-custom-config.yaml &
 ``` 
 
-### Use it with Docker :
+## Use it with Docker :
 
 Let's assume that the configuration file (```config.yaml```) is in ```my-config-folder```
 
@@ -55,11 +59,11 @@ docker run -d --name containerName -v /full-path/to/my-config-folder:/etc/ggsp/ 
 ```bash
 rocker build .
 ```
-This project migrated to [Rocker](https://github.com/grammarly/rocker) for builds. It allows the creation of much slimmer images (no layered images with all compilation/build steps).
+This project migrated to [Rocker](https://github.com/grammarly/rocker) for builds. It allows the creation of much slimmer images (no layered images with all compilation/build steps). Thanks to Rocker the image is now smaller than 10mb!
 
 This change has no impact for users of the image (no need to install Rocker). 
 
-### HTTPS, HTTP/2.0 support
+## HTTPS, HTTP/2.0 support
 
 `Go Google Sites Proxy` doesn't support yet, and might never, HTTPS and HTTP/2.0 protocols. Since these protocols are nowadays *a must*, but on the other hand, they require fine tuning, a clever approach would be to use [NGINX](https://www.nginx.org) [(docker image)](https://hub.docker.com/_/nginx/) or to use a well-known service such that [CloudFlare](https://www.cloudflare.com). 
 
