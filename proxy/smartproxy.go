@@ -8,6 +8,8 @@ import (
 	"strconv"
 	"go-google-sites-proxy/config"
 	"net/http"
+	"sync/atomic"
+	"unsafe"
 )
 
 type Context struct {
@@ -17,7 +19,7 @@ type Context struct {
 
 func NewCheapProxy(port uint16) *SmartProxy {
 
-	buildContext := func(configuration config.Configuration) Context {
+	buildContext := func(configuration config.Configuration) *Context {
 		context := Context{
 			configuration,
 			make(map[string]*func(responseWriter http.ResponseWriter, request *http.Request))}
@@ -28,23 +30,24 @@ func NewCheapProxy(port uint16) *SmartProxy {
 				addRedirect(f, e.Host)
 			}
 		}
-		return context
+		return &context
 	}
 
-	var context Context
+	var context unsafe.Pointer
 
 	handler := func(responseWriter http.ResponseWriter, request *http.Request) {
-		siteHandler := context.sites[request.Host]
+		ctx := (*Context)(atomic.LoadPointer(&context))
+		siteHandler := ctx.sites[request.Host]
 		if siteHandler != nil {
 			(*siteHandler)(responseWriter, request)
-		} else if context.configuration.Index {
-			(*getIndex(context.configuration))(responseWriter, request)
+		} else if ctx.configuration.Index {
+			(*getIndex(ctx.configuration))(responseWriter, request)
 		}
 	}
 
 	return &SmartProxy{
 		SetConfiguration: func(configuration config.Configuration) {
-			context = buildContext(configuration)
+			atomic.StorePointer(&context, unsafe.Pointer(buildContext(configuration)))
 		},
 		Port: func() uint16 { return port },
 		Start: func() error {
