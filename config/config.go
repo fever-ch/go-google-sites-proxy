@@ -12,10 +12,11 @@ type Site struct {
 	Language    string `yaml:"language"`
 	KeepLinks   bool `yaml:"keeplinks"`
 	IPHeader string `yaml:ipheader`
+	FaviconPath string `yaml:faviconpath`
 }
 
 type Configuration struct {
 	Port  int `yaml:"port"`
-	Sites []Site `yaml:"sites"`
+	Sites []*Site `yaml:"sites"`
 	Index bool `yaml:index`
 }

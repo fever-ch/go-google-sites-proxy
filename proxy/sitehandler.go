@@ -11,7 +11,6 @@ import (
 	"io/ioutil"
 
 	"net/http"
-	"bytes"
 	"regexp"
 	"strings"
 	"go-google-sites-proxy/blob"
@@ -21,11 +20,26 @@ import (
 	"fmt"
 )
 
+type SiteContext struct {
+	Site    *config.Site
+	Favicon *Page
+}
+
 // Get site handler for a given site
 func GetSiteHandler(site *config.Site) *func(responseWriter http.ResponseWriter, request *http.Request) {
+	siteContext := &SiteContext{}
+
+	if (site.FaviconPath != "") {
+		buf, _ := ioutil.ReadFile(site.FaviconPath)
+		h := make(map[string](string))
+		h["Content-Type"] = "image/x-icon"
+		siteContext.Favicon = &Page{200, h, blob.NewRawBlob(buf), true}
+	}
+
 	var htmlRx, _ = regexp.Compile("text/html($|;.*)")
 
 	googleSitePathRoot := "https://sites.google.com/view/" + site.Ref
+	patcher := newPatcher(site,siteContext)
 
 	retrieve := func(url string) (*http.Response, error) {
 		var netClient = &http.Client{
@@ -89,11 +103,11 @@ func GetSiteHandler(site *config.Site) *func(responseWriter http.ResponseWriter,
 			body = blob.NewRawBlob(b)
 		}
 
-		if !site.KeepLinks && htmlRx.MatchString(resp.Header.Get("Content-Type")) {
-			body = blob.NewRawBlob(bytes.Replace(body.Raw(), []byte( "\"/view/"+site.Ref), []byte( "\""), -1))
+		if !site.KeepLinks && htmlRx.MatchString(headers["Content-Type"]) {
+			body = blob.NewRawBlob(patchLinks(body.Raw(), site))
 		}
 
-		return &Page{resp.StatusCode, headers, body, gzipped}
+		return patcher(&Page{resp.StatusCode, headers, body, gzipped})
 	}
 
 	// The actual handler that will get the request for this site
@@ -105,12 +119,18 @@ func GetSiteHandler(site *config.Site) *func(responseWriter http.ResponseWriter,
 			var code int
 			switch request.Method {
 			case "GET":
-				gsitesResponse, err := retrieve(request.URL.Path)
-				if err != nil {
-					errorPage(502, "Bad gateway", "Unable to retrieve page on remote server", responseWriter)
-					break
+				var page *Page
+				if request.URL.Path == "/favicon.ico" && siteContext.Favicon != nil {
+					page = siteContext.Favicon
+				} else {
+					gsitesResponse, err := retrieve(request.URL.Path)
+					if err != nil {
+						errorPage(502, "Bad gateway", "Unable to retrieve page on remote server", responseWriter)
+						break
+					}
+					page = respToPage(gsitesResponse)
 				}
-				page := respToPage(gsitesResponse)
+
 				code = renderPage(page, responseWriter, strings.Contains(request.Header.Get("Content-Encoding"), "gzip"))
 
 			default:

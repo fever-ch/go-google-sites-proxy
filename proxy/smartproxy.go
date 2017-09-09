@@ -14,8 +14,8 @@ func NewCheapProxy(configuration config.Configuration) *SmartProxy {
 
 	sites := make(map[string]*func(responseWriter http.ResponseWriter, request *http.Request))
 
-	addSite := func(site config.Site) {
-		sites[site.Host] = GetSiteHandler(&site)
+	addSite := func(site *config.Site) {
+		sites[site.Host] = GetSiteHandler(site)
 	}
 
 	for _, e := range configuration.Sites {

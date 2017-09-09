@@ -2,6 +2,7 @@ port: 9080
 index: True
 sites:
   - ref: go-gsites-proxy
+    faviconpath: favicon.ico
     host: localhost:9080
     ipheader: CF-Connecting-IP
     language: en-GB,en;q=0.8,en-US;q=0.6,fr;q=0.4

@@ -31,7 +31,7 @@ const tmpl = `<!DOCTYPE html>
 
 type IndexStruct struct {
 	ProgramInfo common.ProgramInfoStruct
-	Sites             [] config.Site
+	Sites             [] *config.Site
 }
 
 func getIndex(configuration config.Configuration) *func(responseWriter http.ResponseWriter, request *http.Request) {
