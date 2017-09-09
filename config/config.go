@@ -16,7 +16,7 @@ type Site struct {
 }
 
 type Configuration struct {
-	Port  int `yaml:"port"`
+	Port  uint16 `yaml:"port"`
 	Sites []*Site `yaml:"sites"`
 	Index bool `yaml:index`
 }

@@ -15,7 +15,7 @@ type Context struct {
 	sites         map[string]*func(responseWriter http.ResponseWriter, request *http.Request)
 }
 
-func NewCheapProxy(configuration config.Configuration) *SmartProxy {
+func NewCheapProxy(port uint16) *SmartProxy {
 
 	buildContext := func(configuration config.Configuration) Context {
 		context := Context{
@@ -31,7 +31,7 @@ func NewCheapProxy(configuration config.Configuration) *SmartProxy {
 		return context
 	}
 
-	context := buildContext(configuration)
+	var context Context
 
 	handler := func(responseWriter http.ResponseWriter, request *http.Request) {
 		siteHandler := context.sites[request.Host]
@@ -43,19 +43,21 @@ func NewCheapProxy(configuration config.Configuration) *SmartProxy {
 	}
 
 	return &SmartProxy{
+		SetConfiguration: func(configuration config.Configuration) {
+			context = buildContext(configuration)
+		},
+		Port: func() uint16 { return port },
 		Start: func() error {
 			http.HandleFunc("/", handler)
-			err := http.ListenAndServe(":"+strconv.Itoa(context.configuration.Port), nil)
-			if err != nil {
-				return err
-			}
-			select {} // wait forever
+			return http.ListenAndServe(":"+strconv.Itoa(int(port)), nil)
 		},
 	}
 }
 
 type SmartProxy struct {
-	Start func() error
+	Start            func() error
+	SetConfiguration func(config.Configuration)
+	Port             func() uint16
 }
 
 type SmartProxyConfig struct {
