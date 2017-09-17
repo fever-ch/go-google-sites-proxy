@@ -15,7 +15,7 @@ type LazyContainer struct {
 }
 
 const (
-	EMPTY uint32 = iota
+	EMPTY         uint32 = iota
 	GETTING_READY
 	READY
 )
@@ -27,19 +27,21 @@ func NewLazyContainer(f func() unsafe.Pointer) *LazyContainer {
 
 	status := EMPTY
 
-	prepare := func() {
+	prepare := func() unsafe.Pointer {
 		mtx.Lock()
-		atomic.StorePointer(&content, f())
+		value := f()
+		atomic.StorePointer(&content, value)
 
 		// next getters doesn't need to look at any lock
-		atomic.StoreUint32(&status, READY)
-		mtx.Unlock()
+		defer atomic.StoreUint32(&status, READY)
+		defer mtx.Unlock()
+		return value
 	}
 
 	lc.Get = func() unsafe.Pointer {
 		if atomic.LoadUint32(&status) != READY {
 			if atomic.CompareAndSwapUint32(&status, EMPTY, GETTING_READY) {
-				prepare()
+				return prepare()
 			} else {
 				// IT IS GETTING READY
 				// tries to acquire the lock and release it
