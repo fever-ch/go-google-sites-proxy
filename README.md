@@ -39,7 +39,7 @@ sites:
 
 Fetch sources and build it:
 
-    go get -v github.com/fever-ch/go-google-sites-proxy
+    go get -v -u github.com/fever-ch/go-google-sites-proxy
 
 
 Once the `get` completes, you should find your new `go-google-sites-proxy` (or `go-google-sites-proxy.exe`) executable sitting inside `$GOPATH/bin/`.
