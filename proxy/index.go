@@ -7,8 +7,8 @@ package proxy
 import (
 	"text/template"
 	"net/http"
-	"go-google-sites-proxy/config"
-	"go-google-sites-proxy/common"
+	"github.com/fever-ch/go-google-sites-proxy/config"
+	"github.com/fever-ch/go-google-sites-proxy/common"
 	log "github.com/sirupsen/logrus"
 )
 

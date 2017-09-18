@@ -6,11 +6,11 @@ package proxy
 
 import (
 	"bytes"
-	"go-google-sites-proxy/config"
+	"github.com/fever-ch/go-google-sites-proxy/config"
 	"regexp"
-	"go-google-sites-proxy/blob"
+	"github.com/fever-ch/go-google-sites-proxy/blob"
 	"strconv"
-	"go-google-sites-proxy/utils"
+	"github.com/fever-ch/go-google-sites-proxy/utils"
 )
 
 func patchLinks(input [] byte, site *config.Site) []byte {

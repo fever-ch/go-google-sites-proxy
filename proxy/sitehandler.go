@@ -13,8 +13,8 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
-	"go-google-sites-proxy/blob"
-	"go-google-sites-proxy/config"
+	"github.com/fever-ch/go-google-sites-proxy/blob"
+	"github.com/fever-ch/go-google-sites-proxy/config"
 
 	log "github.com/sirupsen/logrus"
 	"fmt"

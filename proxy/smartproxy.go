@@ -6,7 +6,7 @@ package proxy
 
 import (
 	"strconv"
-	"go-google-sites-proxy/config"
+	"github.com/fever-ch/go-google-sites-proxy/config"
 	"net/http"
 	"sync/atomic"
 	"unsafe"

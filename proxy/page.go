@@ -4,7 +4,7 @@
 
 package proxy
 
-import "go-google-sites-proxy/blob"
+import "github.com/fever-ch/go-google-sites-proxy/blob"
 
 type Page struct {
 	Code             int

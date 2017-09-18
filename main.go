@@ -10,8 +10,8 @@ import (
 
 	"gopkg.in/yaml.v2"
 
-	"go-google-sites-proxy/proxy"
-	"go-google-sites-proxy/config"
+	"github.com/fever-ch/go-google-sites-proxy/proxy"
+	"github.com/fever-ch/go-google-sites-proxy/config"
 	log "github.com/sirupsen/logrus"
 	"path/filepath"
 	"os/signal"

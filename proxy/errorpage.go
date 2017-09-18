@@ -7,7 +7,7 @@ package proxy
 import (
 	"text/template"
 	"net/http"
-	"go-google-sites-proxy/common"
+	"github.com/fever-ch/go-google-sites-proxy/common"
 )
 
 const errorPageTmpl = `<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
