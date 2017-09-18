@@ -6,18 +6,18 @@ package proxy
 
 import (
 	"bytes"
-	"github.com/fever-ch/go-google-sites-proxy/config"
 	"regexp"
 	"github.com/fever-ch/go-google-sites-proxy/blob"
 	"strconv"
 	"github.com/fever-ch/go-google-sites-proxy/utils"
+	"github.com/fever-ch/go-google-sites-proxy/common"
 )
 
-func patchLinks(input [] byte, site *config.Site) []byte {
+func patchLinks(input [] byte, site *common.Site) []byte {
 	return bytes.Replace(input, []byte( "\"/view/"+site.Ref), []byte( "\""), -1)
 }
 
-func newPatcher(site *config.Site, context *SiteContext) func(*Page) *Page {
+func newPatcher(site *common.Site, context *SiteContext) func(*Page) *Page {
 	var htmlRx, _ = regexp.Compile("text/html($|;.*)")
 	patchLinks := func(input *Page) *Page {
 		if !site.KeepLinks && htmlRx.MatchString(input.Headers["Content-Type"]) {

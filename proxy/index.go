@@ -7,7 +7,6 @@ package proxy
 import (
 	"text/template"
 	"net/http"
-	"github.com/fever-ch/go-google-sites-proxy/config"
 	"github.com/fever-ch/go-google-sites-proxy/common"
 	log "github.com/sirupsen/logrus"
 )
@@ -31,10 +30,10 @@ const tmpl = `<!DOCTYPE html>
 
 type IndexStruct struct {
 	ProgramInfo common.ProgramInfoStruct
-	Sites             [] *config.Site
+	Sites             [] *common.Site
 }
 
-func getIndex(configuration config.Configuration) *func(responseWriter http.ResponseWriter, request *http.Request) {
+func getIndex(configuration common.Configuration) *func(responseWriter http.ResponseWriter, request *http.Request) {
 	f := func(responseWriter http.ResponseWriter, req *http.Request) {
 		t := template.New("")
 		tt, _ := t.Parse(tmpl)

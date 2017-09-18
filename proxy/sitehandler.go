@@ -14,19 +14,20 @@ import (
 	"regexp"
 	"strings"
 	"github.com/fever-ch/go-google-sites-proxy/blob"
-	"github.com/fever-ch/go-google-sites-proxy/config"
+
 
 	log "github.com/sirupsen/logrus"
 	"fmt"
+	"github.com/fever-ch/go-google-sites-proxy/common"
 )
 
 type SiteContext struct {
-	Site    *config.Site
+	Site    *common.Site
 	Favicon *Page
 }
 
 // Get site handler for a given site
-func GetSiteHandler(site *config.Site) *func(responseWriter http.ResponseWriter, request *http.Request) {
+func GetSiteHandler(site *common.Site) *func(responseWriter http.ResponseWriter, request *http.Request) {
 	siteContext := &SiteContext{}
 
 	if site.FaviconPath != "" {

@@ -11,25 +11,25 @@ import (
 	"gopkg.in/yaml.v2"
 
 	"github.com/fever-ch/go-google-sites-proxy/proxy"
-	"github.com/fever-ch/go-google-sites-proxy/config"
 	log "github.com/sirupsen/logrus"
 	"path/filepath"
 	"os/signal"
 	"syscall"
 	"fmt"
+	"github.com/fever-ch/go-google-sites-proxy/common"
 )
 
 // Load configuration stored in filename (yaml format)
-func loadConfig(filename string) (config.Configuration, error) {
+func loadConfig(filename string) (common.Configuration, error) {
 	bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return config.Configuration{}, err
+		return common.Configuration{}, err
 	}
 
-	c := config.Configuration{}
+	c := common.Configuration{}
 	err = yaml.Unmarshal(bytes, &c)
 	if err != nil {
-		return config.Configuration{}, err
+		return common.Configuration{}, err
 	}
 
 	return c, nil

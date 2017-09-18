@@ -6,20 +6,20 @@ package proxy
 
 import (
 	"strconv"
-	"github.com/fever-ch/go-google-sites-proxy/config"
 	"net/http"
 	"sync/atomic"
 	"unsafe"
+	"github.com/fever-ch/go-google-sites-proxy/common"
 )
 
 type Context struct {
-	configuration config.Configuration
+	configuration common.Configuration
 	sites         map[string]*func(responseWriter http.ResponseWriter, request *http.Request)
 }
 
 func NewCheapProxy(port uint16) *SmartProxy {
 
-	buildContext := func(configuration config.Configuration) *Context {
+	buildContext := func(configuration common.Configuration) *Context {
 		context := Context{
 			configuration,
 			make(map[string]*func(responseWriter http.ResponseWriter, request *http.Request))}
@@ -46,7 +46,7 @@ func NewCheapProxy(port uint16) *SmartProxy {
 	}
 
 	return &SmartProxy{
-		SetConfiguration: func(configuration config.Configuration) {
+		SetConfiguration: func(configuration common.Configuration) {
 			atomic.StorePointer(&context, unsafe.Pointer(buildContext(configuration)))
 		},
 		Port: func() uint16 { return port },
@@ -59,7 +59,7 @@ func NewCheapProxy(port uint16) *SmartProxy {
 
 type SmartProxy struct {
 	Start            func() error
-	SetConfiguration func(config.Configuration)
+	SetConfiguration func(common.Configuration)
 	Port             func() uint16
 }
 
