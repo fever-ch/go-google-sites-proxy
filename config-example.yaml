@@ -1,9 +1,41 @@
-port: 9080
+# port
+# port that will receive http requests.
+# some operating systems will requires a admin role to use ports < 1024
+posrt: 9080
+
+# index [optional, default value: False]
+# is an index page required (in case a visitors send a request to the
+# server using an unknown hostname
+# default: False
 index: True
 sites:
+
+  # ref
+  # reference on Google Sites, one entry per Google Site
   - ref: go-gsites-proxy
+
+    # favicon [optional]
+    # specify a path to an icon file
     faviconpath: favicon.ico
+
+    # host
+    # hostname that will receive the http requests, port should
+    # be specified if port != 80
     host: localhost:9080
+
+    # redirects [optional]
+    # list of hosts that should be redirected to this site
+    redirects:
+    - www.ggsp.fever.ch
+
+    # ipheader [optional]
+    # if the connecting IP is written in a specific header
     ipheader: CF-Connecting-IP
+
+    # language [optional]
+    # language requested when connecting to Google Sites backend
     language: en-GB,en;q=0.8,en-US;q=0.6,fr;q=0.4
+
+    # description [optional]
+    # name of this site. it is currently used in the index
     description: Go Google Sites Proxy

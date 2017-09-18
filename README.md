@@ -33,32 +33,38 @@ sites:
 - add cache for the retrieved content
 
 
-## Run it on any architecture supported by Golang
+## How to install 
 
-Build a Linux static binary from Linux, OSX, Microsoft Windows, ... (cross-compilation)
+### Build from sources
 
-``` bash
-CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo
-```
-Then run it:
-``` bash
-nohup go-google-sites-proxy my-custom-config.yaml &
-``` 
+Fetch sources and build it:
+
+    go get -v github.com/fever-ch/go-google-sites-proxy
+
+
+Once the `get` completes, you should find your new `go-google-sites-proxy` (or `go-google-sites-proxy.exe`) executable sitting inside `$GOPATH/bin/`.
+
+
+### Execute it
+
+Create your own configuration file (formatted in yaml). This project contains an example named `config-example.yaml`([link](https://github.com/fever-ch/go-google-sites-proxy/blob/master/config-example.yaml)). 
+
+    nohup $GOPATH/bin/go-google-sites-proxy my-custom-config.yaml &
+
+
 
 ## Use it with Docker :
 
 Let's assume that the configuration file (```config.yaml```) is in ```my-config-folder```
 
-```bash
-docker pull feverch/go-google-sites-proxy
-docker run -d --name containerName -v /full-path/to/my-config-folder:/etc/ggsp/ -p 80:9080 feverch/go-google-sites-proxy
-```
+    docker pull feverch/go-google-sites-proxy
+    docker run -d --name containerName -v /full-path/to/my-config-folder:/etc/ggsp/ -p 80:9080 feverch/go-google-sites-proxy
+
 
 
 #### Build your own image with Rocker
-```bash
-rocker build .
-```
+    rocker build .
+
 This project migrated to [Rocker](https://github.com/grammarly/rocker) for builds. It allows the creation of much slimmer images (no layered images with all compilation/build steps). Thanks to Rocker the image is now smaller than 10mb!
 
 This change has no impact for users of the image (no need to install Rocker). 
