@@ -4,19 +4,30 @@
 
 package common
 
+import "strings"
+
 type Site struct {
-	Ref         string `yaml:"ref"`
-	Host        string `yaml:"host"`
-	Description string `yaml:description`
+	Ref         string   `yaml:"ref"`
+	Host        string   `yaml:"host"`
+	Description string   `yaml:description`
 	Redirects   []string `yaml:"redirects"`
-	Language    string `yaml:"language"`
-	KeepLinks   bool `yaml:"keeplinks"`
-	IPHeader string `yaml:ipheader`
-	FaviconPath string `yaml:faviconpath`
+	Language    string   `yaml:"language"`
+	KeepLinks   bool     `yaml:"keeplinks"`
+	ForceSSL    bool     `yaml:forcessl`
+	IPHeader    string   `yaml:ipheader`
+	FaviconPath string   `yaml:faviconpath`
+}
+
+func (s *Site) GRef() string {
+	if !strings.Contains(s.Ref, "/") {
+		return "view/" + s.Ref
+	} else {
+		return s.Ref
+	}
 }
 
 type Configuration struct {
-	Port  uint16 `yaml:"port"`
+	Port  uint16  `yaml:"port"`
 	Sites []*Site `yaml:"sites"`
-	Index bool `yaml:index`
+	Index bool    `yaml:index`
 }

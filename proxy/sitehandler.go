@@ -15,7 +15,6 @@ import (
 	"strings"
 	"github.com/fever-ch/go-google-sites-proxy/blob"
 
-
 	log "github.com/sirupsen/logrus"
 	"fmt"
 	"github.com/fever-ch/go-google-sites-proxy/common"
@@ -36,14 +35,15 @@ func GetSiteHandler(site *common.Site) *func(responseWriter http.ResponseWriter,
 			h := make(map[string](string))
 			h["Content-Type"] = "image/x-icon"
 			siteContext.Favicon = &Page{200, h, blob.NewRawBlob(buf), true}
-		}else{
-			log.WithError(err).Warning(fmt.Sprintf("Failed to load favicon for site %v",site.Host))
+		} else {
+			log.WithError(err).Warning(fmt.Sprintf("Failed to load favicon for site %v", site.Host))
 		}
 	}
 
 	var htmlRx, _ = regexp.Compile("text/html($|;.*)")
 
-	googleSitePathRoot := "https://sites.google.com/view/" + site.Ref
+	googleSitePathRoot := "https://sites.google.com/" + site.GRef()
+
 	patcher := newPatcher(site, siteContext)
 
 	retrieve := func(url string) (*http.Response, error) {
@@ -125,7 +125,9 @@ func GetSiteHandler(site *common.Site) *func(responseWriter http.ResponseWriter,
 			switch request.Method {
 			case "GET":
 				var page *Page
-				if request.URL.Path == "/favicon.ico" && siteContext.Favicon != nil {
+				if site.ForceSSL && request.Header.Get("X-Forwarded-Proto") == "http" {
+
+				} else if request.URL.Path == "/favicon.ico" && siteContext.Favicon != nil {
 					page = siteContext.Favicon
 				} else {
 					gsitesResponse, err := retrieve(request.URL.Path)

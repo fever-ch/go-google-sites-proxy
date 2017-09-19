@@ -20,14 +20,33 @@ type Context struct {
 func NewCheapProxy(port uint16) *SmartProxy {
 
 	buildContext := func(configuration common.Configuration) *Context {
+
 		context := Context{
 			configuration,
 			make(map[string]*func(responseWriter http.ResponseWriter, request *http.Request))}
 
 		for _, e := range configuration.Sites {
+
+			addRedirect := func(redirectedHost string, destHost string) *func(responseWriter http.ResponseWriter, request *http.Request) {
+				prot := "http"
+
+				if (e.ForceSSL) {
+					prot = "https"
+				}
+
+				redirectHandler := func(response http.ResponseWriter, req *http.Request) {
+
+					response.WriteHeader(http.StatusMovedPermanently)
+					response.Header().Add("Location", prot+"://"+destHost+"/"+req.URL.Path)
+
+					response.Write([]byte(strconv.Itoa(http.StatusMovedPermanently) + " Moved permanently"))
+				}
+				return &redirectHandler
+			}
+
 			context.sites[e.Host] = GetSiteHandler(e)
 			for _, f := range e.Redirects {
-				addRedirect(f, e.Host)
+				context.sites[f] = addRedirect(f, e.Host)
 			}
 		}
 		return &context

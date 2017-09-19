@@ -14,7 +14,7 @@ import (
 )
 
 func patchLinks(input [] byte, site *common.Site) []byte {
-	return bytes.Replace(input, []byte( "\"/view/"+site.Ref), []byte( "\""), -1)
+	return bytes.Replace(input, []byte( "\"/"+site.GRef()), []byte( "\""), -1)
 }
 
 func newPatcher(site *common.Site, context *SiteContext) func(*Page) *Page {
@@ -23,7 +23,7 @@ func newPatcher(site *common.Site, context *SiteContext) func(*Page) *Page {
 		if !site.KeepLinks && htmlRx.MatchString(input.Headers["Content-Type"]) {
 			return &Page{input.Code,
 				input.Headers,
-				blob.NewRawBlob(bytes.Replace(input.Blob.Raw(), []byte( "\"/view/"+site.Ref), []byte( "\""), -1)),
+				blob.NewRawBlob(bytes.Replace(input.Blob.Raw(), []byte( "\"/"+site.GRef()), []byte( "\""), -1)),
 				input.OriginallyGziped}
 		} else {
 			return input
