@@ -5,7 +5,7 @@
 package proxy
 
 import (
-	"text/template"
+	"html/template"
 	"net/http"
 	"github.com/fever-ch/go-google-sites-proxy/common"
 )

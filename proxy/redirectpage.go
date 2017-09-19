@@ -5,7 +5,7 @@
 package proxy
 
 import (
-	"text/template"
+	"html/template"
 	"net/http"
 	"github.com/fever-ch/go-google-sites-proxy/common"
 	"bytes"
@@ -21,7 +21,7 @@ const movedPageTmpl = `<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <hr>
 </body></html>`
 
-func movedPage(code int, dest string) func(request *http.Request) *Page {
+func movedPage(code int, destRoot string) func(request *http.Request) *Page {
 	type MovedPage struct {
 		Dest        string
 		ProgramInfo common.ProgramInfoStruct
@@ -31,7 +31,7 @@ func movedPage(code int, dest string) func(request *http.Request) *Page {
 	tt, _ := t.Parse(movedPageTmpl)
 
 	return func(request *http.Request) *Page {
-		fullDest := dest + request.URL.Path
+		fullDest := destRoot + request.URL.Path
 		hdrs := make(map[string]((string)))
 		hdrs["Location"] = fullDest
 
@@ -39,7 +39,6 @@ func movedPage(code int, dest string) func(request *http.Request) *Page {
 
 		tt.Execute(&doc, MovedPage{fullDest, common.ProgramInfo})
 
-		b := []byte (doc.String())
-		return &Page{code, hdrs, blob.NewRawBlob(b), true}
+		return &Page{code, hdrs, blob.NewRawBlob([]byte (doc.String())), true}
 	}
 }
