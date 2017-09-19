@@ -126,13 +126,13 @@ func GetSiteHandler(site *common.Site) *func(responseWriter http.ResponseWriter,
 			case "GET":
 				var page *Page
 				if site.ForceSSL && request.Header.Get("X-Forwarded-Proto") == "http" {
-
+					page = movedPage(http.StatusTemporaryRedirect, "https://"+site.Host)(request)
 				} else if request.URL.Path == "/favicon.ico" && siteContext.Favicon != nil {
 					page = siteContext.Favicon
 				} else {
 					gsitesResponse, err := retrieve(request.URL.Path)
 					if err != nil {
-						errorPage(502, "Bad gateway", "Unable to retrieve page on remote server", responseWriter)
+						errorPage(http.StatusInternalServerError, "Bad gateway", "Unable to retrieve page on remote server")(responseWriter, request)
 						break
 					}
 					page = respToPage(gsitesResponse)

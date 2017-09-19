@@ -20,16 +20,20 @@ const errorPageTmpl = `<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <address>{{.ProgramInfo.Name}} - {{.ProgramInfo.Version}}</address>
 </body></html>`
 
-type ErrorPage struct {
-	Title       string
-	Message     string
-	ProgramInfo common.ProgramInfoStruct
-}
-
-func errorPage(code int, title string, message string, responseWriter http.ResponseWriter) {
-	responseWriter.WriteHeader(code)
+func errorPage(code int, title string, message string) func(responseWriter http.ResponseWriter, request *http.Request) {
+	type ErrorPage struct {
+		Title       string
+		Message     string
+		ProgramInfo common.ProgramInfoStruct
+	}
 
 	t := template.New("")
 	tt, _ := t.Parse(errorPageTmpl)
-	tt.Execute(responseWriter, ErrorPage{title, message, common.ProgramInfo})
+
+	e := ErrorPage{title, message, common.ProgramInfo}
+
+	return func(responseWriter http.ResponseWriter, request *http.Request) {
+		responseWriter.WriteHeader(code)
+		tt.Execute(responseWriter, e)
+	}
 }
