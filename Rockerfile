@@ -1,9 +1,9 @@
 FROM golang:1.9
 
-ADD . /go/src/go-google-sites-proxy
-WORKDIR /go/src/go-google-sites-proxy
-RUN go get; CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo
-EXPORT /go/src/go-google-sites-proxy/go-google-sites-proxy /go-google-sites-proxy
+ADD . /go/src/github.com/fever-ch/go-google-sites-proxy
+WORKDIR /go/src/github.com/fever-ch/go-google-sites-proxy
+RUN go get ./...; CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo
+EXPORT /go/src/github.com/fever-ch/go-google-sites-proxy/go-google-sites-proxy /go-google-sites-proxy
 
 
 
