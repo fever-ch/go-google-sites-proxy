@@ -1,7 +1,7 @@
 # port
 # port that will receive http requests.
 # some operating systems will requires a admin role to use ports < 1024
-posrt: 9080
+port: 9080
 
 # index [optional, default value: False]
 # is an index page required (in case a visitors send a request to the
