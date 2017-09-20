@@ -46,7 +46,7 @@ func main() {
 	if cfg, err := loadConfig(confFile); err != nil {
 		log.WithError(err).Fatal("Unable to load configuration")
 	} else {
-		proxy := proxy.NewCheapProxy(cfg.Port)
+		proxy := proxy.NewCheapProxy(cfg.Port())
 		proxy.SetConfiguration(cfg)
 
 		startUp := func() {
@@ -63,7 +63,7 @@ func main() {
 			<-c
 			if cfg, err := loadConfig(confFile); err != nil {
 				log.WithError(err).Warn("Unable to parse config")
-			} else if cfg.Port != proxy.Port() {
+			} else if cfg.Port() != proxy.Port() {
 				log.Warning(fmt.Sprintf("Server currently running on port %d but config specifies %d. This change will "+
 					"not be taken in account. Please restart daemon.", proxy.Port(), cfg.Port))
 			} else {

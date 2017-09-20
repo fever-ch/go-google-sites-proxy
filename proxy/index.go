@@ -37,7 +37,7 @@ func getIndex(configuration common.Configuration) *func(responseWriter http.Resp
 	f := func(responseWriter http.ResponseWriter, req *http.Request) {
 		t := template.New("")
 		tt, _ := t.Parse(tmpl)
-		err := tt.Execute(responseWriter, IndexStruct{common.ProgramInfo, configuration.Sites})
+		err := tt.Execute(responseWriter, IndexStruct{common.ProgramInfo, configuration.Sites()})
 		if err != nil {
 			log.Warning("Problem rendering the template", err)
 		}

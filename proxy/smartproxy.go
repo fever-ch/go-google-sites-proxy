@@ -25,12 +25,12 @@ func NewCheapProxy(port uint16) *SmartProxy {
 			configuration,
 			make(map[string]*func(responseWriter http.ResponseWriter, request *http.Request))}
 
-		for _, e := range configuration.Sites {
+		for _, e := range configuration.Sites() {
 
 			addRedirect := func(redirectedHost string, destHost string) *func(responseWriter http.ResponseWriter, request *http.Request) {
 				prot := "http"
 
-				if (e.ForceSSL) {
+				if (e.FrontProxy.ForceSSL) {
 					prot = "https"
 				}
 
@@ -59,7 +59,7 @@ func NewCheapProxy(port uint16) *SmartProxy {
 		siteHandler := ctx.sites[request.Host]
 		if siteHandler != nil {
 			(*siteHandler)(responseWriter, request)
-		} else if ctx.configuration.Index {
+		} else if ctx.configuration.Index() {
 			(*getIndex(ctx.configuration))(responseWriter, request)
 		}
 	}

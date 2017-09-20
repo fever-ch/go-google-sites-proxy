@@ -28,10 +28,6 @@ sites:
     redirects:
     - www.ggsp.fever.ch
 
-    # ipheader [optional]
-    # if the connecting IP is written in a specific header
-    ipheader: CF-Connecting-IP
-
     # language [optional]
     # language requested when connecting to Google Sites backend
     language: en-GB,en;q=0.8,en-US;q=0.6,fr;q=0.4
@@ -39,3 +35,8 @@ sites:
     # description [optional]
     # name of this site. it is currently used in the index
     description: Go Google Sites Proxy
+
+    frontproxy:
+      type: CloudFlare
+
+      force-ssl: True

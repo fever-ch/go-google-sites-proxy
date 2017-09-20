@@ -4,19 +4,9 @@
 
 package common
 
-import "strings"
-
-type Site struct {
-	Ref         string   `yaml:"ref"`
-	Host        string   `yaml:"host"`
-	Description string   `yaml:description`
-	Redirects   []string `yaml:"redirects"`
-	Language    string   `yaml:"language"`
-	KeepLinks   bool     `yaml:"keeplinks"`
-	ForceSSL    bool     `yaml:forcessl`
-	IPHeader    string   `yaml:ipheader`
-	FaviconPath string   `yaml:faviconpath`
-}
+import (
+	"strings"
+)
 
 func (s *Site) GRef() string {
 	if !strings.Contains(s.Ref, "/") {
@@ -27,7 +17,33 @@ func (s *Site) GRef() string {
 }
 
 type Configuration struct {
-	Port  uint16  `yaml:"port"`
-	Sites []*Site `yaml:"sites"`
-	Index bool    `yaml:index`
+	portField  uint16  `yaml:"port"`
+	sitesField []*Site `yaml:"sites"`
+	indexField bool    `yaml:index`
+}
+
+func (config *Configuration) Port() uint16 {
+	return config.portField
+}
+
+func (config *Configuration) Sites() []*Site { return config.sitesField }
+
+func (config *Configuration) Index() bool { return config.indexField }
+
+type Site struct {
+	Ref         string   `yaml:"ref"`
+	Host        string   `yaml:"host"`
+	Description string   `yaml:description`
+	Redirects   []string `yaml:"redirects"`
+	Language    string   `yaml:"language"`
+	KeepLinks   bool     `yaml:"keeplinks"`
+	FaviconPath string   `yaml:faviconpath`
+	FrontProxy  *FrontProxy `yaml:frontproxy`
+}
+
+func (s *Configuration) PortA() {}
+
+type FrontProxy struct {
+	ForceSSL bool     `yaml:forcessl`
+	IPHeader string   `yaml:ipheader`
 }
