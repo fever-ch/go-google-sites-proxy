@@ -9,17 +9,17 @@ import (
 	"net/http"
 	"sync/atomic"
 	"unsafe"
-	"github.com/fever-ch/go-google-sites-proxy/common"
+	"github.com/fever-ch/go-google-sites-proxy/common/config"
 )
 
 type Context struct {
-	configuration common.Configuration
+	configuration config.Configuration
 	sites         map[string]*func(responseWriter http.ResponseWriter, request *http.Request)
 }
 
 func NewCheapProxy(port uint16) *SmartProxy {
 
-	buildContext := func(configuration common.Configuration) *Context {
+	buildContext := func(configuration config.Configuration) *Context {
 
 		context := Context{
 			configuration,
@@ -29,8 +29,7 @@ func NewCheapProxy(port uint16) *SmartProxy {
 
 			addRedirect := func(redirectedHost string, destHost string) *func(responseWriter http.ResponseWriter, request *http.Request) {
 				prot := "http"
-
-				if (e.FrontProxy.ForceSSL) {
+				if e.FrontProxy().ForceSSL {
 					prot = "https"
 				}
 
@@ -44,9 +43,9 @@ func NewCheapProxy(port uint16) *SmartProxy {
 				return &redirectHandler
 			}
 
-			context.sites[e.Host] = GetSiteHandler(e)
-			for _, f := range e.Redirects {
-				context.sites[f] = addRedirect(f, e.Host)
+			context.sites[e.Host()] = GetSiteHandler(e)
+			for _, f := range e.Redirects() {
+				context.sites[f] = addRedirect(f, e.Host())
 			}
 		}
 		return &context
@@ -65,7 +64,7 @@ func NewCheapProxy(port uint16) *SmartProxy {
 	}
 
 	return &SmartProxy{
-		SetConfiguration: func(configuration common.Configuration) {
+		SetConfiguration: func(configuration config.Configuration) {
 			atomic.StorePointer(&context, unsafe.Pointer(buildContext(configuration)))
 		},
 		Port: func() uint16 { return port },
@@ -78,7 +77,7 @@ func NewCheapProxy(port uint16) *SmartProxy {
 
 type SmartProxy struct {
 	Start            func() error
-	SetConfiguration func(common.Configuration)
+	SetConfiguration func(config.Configuration)
 	Port             func() uint16
 }
 

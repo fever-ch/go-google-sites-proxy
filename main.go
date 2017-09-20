@@ -6,34 +6,14 @@ package main
 
 import (
 	"os"
-	"io/ioutil"
-
-	"gopkg.in/yaml.v2"
-
 	"github.com/fever-ch/go-google-sites-proxy/proxy"
 	log "github.com/sirupsen/logrus"
 	"path/filepath"
 	"os/signal"
 	"syscall"
 	"fmt"
-	"github.com/fever-ch/go-google-sites-proxy/common"
+	"github.com/fever-ch/go-google-sites-proxy/common/config"
 )
-
-// Load configuration stored in filename (yaml format)
-func loadConfig(filename string) (common.Configuration, error) {
-	bytes, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return common.Configuration{}, err
-	}
-
-	c := common.Configuration{}
-	err = yaml.Unmarshal(bytes, &c)
-	if err != nil {
-		return common.Configuration{}, err
-	}
-
-	return c, nil
-}
 
 func main() {
 	if len(os.Args) != 2 {
@@ -43,7 +23,7 @@ func main() {
 	confFile := os.Args[1]
 	os.Chdir(filepath.Dir(confFile))
 
-	if cfg, err := loadConfig(confFile); err != nil {
+	if cfg, err := config.LoadConfig(confFile); err != nil {
 		log.WithError(err).Fatal("Unable to load configuration")
 	} else {
 		proxy := proxy.NewCheapProxy(cfg.Port())
@@ -61,11 +41,11 @@ func main() {
 			c := make(chan os.Signal, 1)
 			signal.Notify(c, syscall.SIGUSR1)
 			<-c
-			if cfg, err := loadConfig(confFile); err != nil {
+			if cfg, err := config.LoadConfig(confFile); err != nil {
 				log.WithError(err).Warn("Unable to parse config")
 			} else if cfg.Port() != proxy.Port() {
 				log.Warning(fmt.Sprintf("Server currently running on port %d but config specifies %d. This change will "+
-					"not be taken in account. Please restart daemon.", proxy.Port(), cfg.Port))
+					"not be taken in account. Please restart daemon.", proxy.Port(), cfg.Port()))
 			} else {
 				proxy.SetConfiguration(cfg)
 				log.Info("Configuration reloaded")

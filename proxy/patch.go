@@ -10,17 +10,17 @@ import (
 	"github.com/fever-ch/go-google-sites-proxy/blob"
 	"strconv"
 	"github.com/fever-ch/go-google-sites-proxy/utils"
-	"github.com/fever-ch/go-google-sites-proxy/common"
+	"github.com/fever-ch/go-google-sites-proxy/common/config"
 )
 
-func patchLinks(input [] byte, site *common.Site) []byte {
+func patchLinks(input [] byte, site config.Site) []byte {
 	return bytes.Replace(input, []byte( "\"/"+site.GRef()), []byte( "\""), -1)
 }
 
-func newPatcher(site *common.Site, context *SiteContext) func(*Page) *Page {
+func newPatcher(site config.Site, context *SiteContext) func(*Page) *Page {
 	var htmlRx, _ = regexp.Compile("text/html($|;.*)")
 	patchLinks := func(input *Page) *Page {
-		if !site.KeepLinks && htmlRx.MatchString(input.Headers["Content-Type"]) {
+		if !site.KeepLinks() && htmlRx.MatchString(input.Headers["Content-Type"]) {
 			return &Page{input.Code,
 				input.Headers,
 				blob.NewRawBlob(bytes.Replace(input.Blob.Raw(), []byte( "\"/"+site.GRef()), []byte( "\""), -1)),

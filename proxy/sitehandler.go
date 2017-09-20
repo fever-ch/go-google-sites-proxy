@@ -17,20 +17,20 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"fmt"
-	"github.com/fever-ch/go-google-sites-proxy/common"
+	"github.com/fever-ch/go-google-sites-proxy/common/config"
 )
 
 type SiteContext struct {
-	Site    *common.Site
+	Site    *config.SiteYaml
 	Favicon *Page
 }
 
 // Get site handler for a given site
-func GetSiteHandler(site *common.Site) *func(responseWriter http.ResponseWriter, request *http.Request) {
+func GetSiteHandler(site config.Site) *func(responseWriter http.ResponseWriter, request *http.Request) {
 	siteContext := &SiteContext{}
 
-	if site.FaviconPath != "" {
-		buf, err := ioutil.ReadFile(site.FaviconPath)
+	if site.FaviconPath() != "" {
+		buf, err := ioutil.ReadFile(site.FaviconPath())
 		if err == nil {
 			h := make(map[string](string))
 			h["Content-Type"] = "image/x-icon"
@@ -51,8 +51,8 @@ func GetSiteHandler(site *common.Site) *func(responseWriter http.ResponseWriter,
 			Timeout: time.Second * 10,
 		}
 		req, _ := http.NewRequest("GET", googleSitePathRoot+url, nil)
-		if site.Language != "" {
-			req.Header.Set("Accept-Language", site.Language)
+		if site.Language() != "" {
+			req.Header.Set("Accept-LanguageField", site.Language())
 		}
 
 		req.Header.Set("Accept-Encoding", "gzip")
@@ -108,7 +108,7 @@ func GetSiteHandler(site *common.Site) *func(responseWriter http.ResponseWriter,
 			body = blob.NewRawBlob(b)
 		}
 
-		if !site.KeepLinks && htmlRx.MatchString(headers["Content-Type"]) {
+		if !site.KeepLinks() && htmlRx.MatchString(headers["Content-Type"]) {
 			body = blob.NewRawBlob(patchLinks(body.Raw(), site))
 		}
 
@@ -125,8 +125,8 @@ func GetSiteHandler(site *common.Site) *func(responseWriter http.ResponseWriter,
 			switch request.Method {
 			case "GET":
 				var page *Page
-				if site.FrontProxy.ForceSSL && request.Header.Get("X-Forwarded-Proto") == "http" {
-					page = movedPage(http.StatusTemporaryRedirect, "https://"+site.Host)(request)
+				if site.FrontProxy().ForceSSL && request.Header.Get("X-Forwarded-Proto") == "http" {
+					page = movedPage(http.StatusTemporaryRedirect, "https://"+site.Host())(request)
 				} else if request.URL.Path == "/favicon.ico" && siteContext.Favicon != nil {
 					page = siteContext.Favicon
 				} else {
@@ -143,10 +143,10 @@ func GetSiteHandler(site *common.Site) *func(responseWriter http.ResponseWriter,
 			default:
 			}
 			var ip string
-			if site.FrontProxy.IPHeader == "" {
+			if site.FrontProxy().IPHeader == "" {
 				ip = request.RemoteAddr
 			} else {
-				ip = request.Header.Get(site.FrontProxy.IPHeader)
+				ip = request.Header.Get(site.FrontProxy().IPHeader)
 			}
 
 			log.Info(fmt.Sprintf("%s \"%s %s %s\" %s %s %d", site.Host, request.Method, request.URL, request.Proto, ip, request.UserAgent(), code))
