@@ -29,7 +29,7 @@ func NewCheapProxy(port uint16) *SmartProxy {
 
 			addRedirect := func(redirectedHost string, destHost string) *func(responseWriter http.ResponseWriter, request *http.Request) {
 				prot := "http"
-				if e.FrontProxy().ForceSSL {
+				if e.ForceSSL() {
 					prot = "https"
 				}
 

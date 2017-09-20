@@ -125,7 +125,7 @@ func GetSiteHandler(site config.Site) *func(responseWriter http.ResponseWriter, 
 			switch request.Method {
 			case "GET":
 				var page *Page
-				if site.FrontProxy().ForceSSL && request.Header.Get("X-Forwarded-Proto") == "http" {
+				if site.ForceSSL() && request.Header.Get("X-Forwarded-Proto") == "http" {
 					page = movedPage(http.StatusTemporaryRedirect, "https://"+site.Host())(request)
 				} else if request.URL.Path == "/favicon.ico" && siteContext.Favicon != nil {
 					page = siteContext.Favicon
@@ -143,10 +143,10 @@ func GetSiteHandler(site config.Site) *func(responseWriter http.ResponseWriter, 
 			default:
 			}
 			var ip string
-			if site.FrontProxy().IPHeader == "" {
+			if site.IPHeader() == "" {
 				ip = request.RemoteAddr
 			} else {
-				ip = request.Header.Get(site.FrontProxy().IPHeader)
+				ip = request.Header.Get(site.IPHeader())
 			}
 
 			log.Info(fmt.Sprintf("%s \"%s %s %s\" %s %s %d", site.Host, request.Method, request.URL, request.Proto, ip, request.UserAgent(), code))

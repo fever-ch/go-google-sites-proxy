@@ -4,13 +4,11 @@
 
 package config
 
-
 type Configuration interface {
 	Sites() []Site
 	Index() bool
 	Port() uint16
 }
-
 
 type Site interface {
 	Ref() string
@@ -20,10 +18,10 @@ type Site interface {
 	Language() string
 	KeepLinks() bool
 	FaviconPath() string
-	FrontProxy() *FrontProxyYaml
 	GRef() string
+
+	ForceSSL() bool
+	IPHeader() string
 }
 
-
-
-
+type ConfigLoader func() (Configuration, error)

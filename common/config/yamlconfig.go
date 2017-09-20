@@ -59,19 +59,29 @@ func (s *SiteYaml) GRef() string {
 		return s.Ref()
 	}
 }
-
-
-func LoadConfig(filename string) (Configuration, error) {
-	bytes, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return nil, err
+func (site *SiteYaml) ForceSSL() bool {
+	return site.FrontProxyField != nil && site.FrontProxyField.ForceSSL
+}
+func (site *SiteYaml) IPHeader() string {
+	if site.FrontProxyField != nil {
+		return site.FrontProxyField.IPHeader
+	} else {
+		return ""
 	}
+}
 
-	c := &ConfigurationYaml{}
-	err = yaml.Unmarshal(bytes, c)
-	if err != nil {
-		return nil, err
+func LoadConfig(filename string) func() (Configuration, error) {
+	return func() (Configuration, error) {
+		bytes, err := ioutil.ReadFile(filename)
+		if err != nil {
+			return nil, err
+		}
+
+		c := &ConfigurationYaml{}
+		err = yaml.Unmarshal(bytes, c)
+		if err != nil {
+			return nil, err
+		}
+		return c, nil
 	}
-	return c, nil
-
 }
