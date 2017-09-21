@@ -72,10 +72,3 @@ type SmartProxy struct {
 	Port             func() uint16
 }
 
-type SmartProxyConfig struct {
-	site      string
-	port      int
-	gz        bool
-	keepLinks bool
-	language  string
-}
