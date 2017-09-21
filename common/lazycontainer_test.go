@@ -21,7 +21,7 @@ func TestLazyContainer(t *testing.T) {
 
 	var containers [entries + extra]*LazyContainer
 
-	var computations int32 = 0
+	var computations int32
 
 	for i := 0; i < entries+extra; i++ {
 		z := i

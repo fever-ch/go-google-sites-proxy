@@ -21,7 +21,7 @@ const tmpl = `<!DOCTYPE html>
     </ul>
     <br>
     <br>
-    2017 Fever.ch - <a href="{{.ProgramInfo.ProjectUrl}}">{{.ProgramInfo.Fullname}}</a>
+    2017 Fever.ch - <a href="{{.ProgramInfo.ProjectURL}}">{{.ProgramInfo.Fullname}}</a>
   </body>
 </html>`
 
