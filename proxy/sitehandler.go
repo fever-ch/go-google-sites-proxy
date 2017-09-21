@@ -114,7 +114,7 @@ func GetSiteHandler(site config.Site) *func(responseWriter http.ResponseWriter, 
 			h["Content-Type"] = "image/x-icon"
 			siteContext.Favicon = &Page{200, h, blob.NewRawBlob(buf), true}
 		} else {
-			log.WithError(err).Warning(fmt.Sprintf("Failed to load favicon for site %v", site.Host))
+			log.WithError(err).Warning(fmt.Sprintf("Failed to load favicon for site %v", site.Host()))
 		}
 	}
 
