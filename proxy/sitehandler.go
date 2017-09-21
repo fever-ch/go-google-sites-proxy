@@ -125,9 +125,7 @@ func GetSiteHandler(site config.Site) *func(responseWriter http.ResponseWriter, 
 			switch request.Method {
 			case "GET":
 				var page *Page
-				if site.ForceSSL() && request.Header.Get("X-Forwarded-Proto") == "http" {
-					page = movedPage(http.StatusTemporaryRedirect, "https://"+site.Host())(request)
-				} else if request.URL.Path == "/favicon.ico" && siteContext.Favicon != nil {
+				if request.URL.Path == "/favicon.ico" && siteContext.Favicon != nil {
 					page = siteContext.Favicon
 				} else {
 					gsitesResponse, err := retrieve(request.URL.Path)

@@ -59,9 +59,7 @@ func (s *SiteYaml) GRef() string {
 		return s.Ref()
 	}
 }
-func (site *SiteYaml) ForceSSL() bool {
-	return site.FrontProxyField != nil && site.FrontProxyField.ForceSSL
-}
+
 func (site *SiteYaml) IPHeader() string {
 	if site.FrontProxyField != nil {
 		return site.FrontProxyField.IPHeader

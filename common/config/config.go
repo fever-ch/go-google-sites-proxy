@@ -20,7 +20,6 @@ type Site interface {
 	FaviconPath() string
 	GRef() string
 
-	ForceSSL() bool
 	IPHeader() string
 }
 
