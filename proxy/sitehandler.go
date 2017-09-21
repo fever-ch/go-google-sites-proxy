@@ -149,7 +149,7 @@ func GetSiteHandler(site config.Site) *func(responseWriter http.ResponseWriter, 
 				ip = request.Header.Get(site.IPHeader())
 			}
 
-			log.Info(fmt.Sprintf("%s \"%s %s %s\" %s %s %d", site.Host, request.Method, request.URL, request.Proto, ip, request.UserAgent(), code))
+			log.Info(fmt.Sprintf("%s \"%s %s %s\" %s %s %d", request.Host, request.Method, request.URL, request.Proto, ip, request.UserAgent(), code))
 		}
 	}
 	return &handleRequest
