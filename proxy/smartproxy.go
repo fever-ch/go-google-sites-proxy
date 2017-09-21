@@ -72,4 +72,3 @@ type smartProxy struct {
 	SetConfiguration func(config.Configuration)
 	Port             func() uint16
 }
-

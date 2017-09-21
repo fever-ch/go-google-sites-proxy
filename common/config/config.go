@@ -22,5 +22,5 @@ type Site interface {
 }
 
 // ConfigLoader is a function that can load a configuration from
-// specific manner, i.e. YamlLoadConfig
+// specific manner, i.e. NewYamlConfigLoader
 type ConfigLoader func() (Configuration, error)
