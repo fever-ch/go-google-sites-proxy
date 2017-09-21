@@ -46,8 +46,7 @@ func NewLazyContainer(f func() unsafe.Pointer) *LazyContainer {
 			// tries to acquire the lock and release it
 			for atomic.LoadUint32(&status) != ready {
 				mtx.Lock()
-				defer mtx.Unlock()
-				return atomic.LoadPointer(&content)
+				mtx.Unlock()
 			}
 		}
 
