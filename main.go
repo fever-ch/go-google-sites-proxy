@@ -7,7 +7,10 @@ import (
 	"os"
 )
 
+// GitVersion is a variable representing the version of the repo at build time (set with -X)
 var GitVersion = ""
+
+// BuildDate is the date at the time the software was compiled (set with -X)
 var BuildDate = ""
 
 func main() {
