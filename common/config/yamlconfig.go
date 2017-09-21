@@ -6,12 +6,14 @@ import (
 	"strings"
 )
 
+// ConfigurationYaml is a structure that will be automatically populated with the value of the configuration
 type ConfigurationYaml struct {
 	PortField  uint16      `yaml:"port"`
 	SitesField []*SiteYaml `yaml:"sites"`
 	IndexField bool        `yaml:"index"`
 }
 
+// SiteYaml is a structure that will be automatically populated with the value of the configuration
 type SiteYaml struct {
 	RefField         string          `yaml:"ref"`
 	HostField        string          `yaml:"host"`
@@ -40,28 +42,42 @@ func (config *ConfigurationYaml) Sites() []Site {
 }
 func (config *ConfigurationYaml) Index() bool { return config.IndexField }
 
-func (site *SiteYaml) Ref() string                 { return site.RefField }
-func (site *SiteYaml) Host() string                { return site.HostField }
-func (site *SiteYaml) Description() string         { return site.DescriptionField }
-func (site *SiteYaml) Redirects() []string         { return site.RedirectsField }
-func (site *SiteYaml) Language() string            { return site.LanguageField }
-func (site *SiteYaml) KeepLinks() bool             { return site.KeepLinksField }
-func (site *SiteYaml) FaviconPath() string         { return site.FaviconPathField }
-func (site *SiteYaml) FrontProxy() *FrontProxyYaml { return site.FrontProxyField }
+// Ref returns the Google Sites reference of the websites
+func (site *SiteYaml) Ref() string { return site.RefField }
+
+// Host returns the host that is supposed to handle respond for this site
+func (site *SiteYaml) Host() string { return site.HostField }
+
+// Description returns a string describing the content of the site
+func (site *SiteYaml) Description() string { return site.DescriptionField }
+
+// Redirects returns a list of hostname that should redirect their traffic to the host
+func (site *SiteYaml) Redirects() []string { return site.RedirectsField }
+
+// Language returns the HTTP header used to query Google servers
+func (site *SiteYaml) Language() string { return site.LanguageField }
+
+// KeepLinks returns true if links should be kept
+func (site *SiteYaml) KeepLinks() bool { return site.KeepLinksField }
+
+// FaviconPath returns the path to the favicon file. No file is assumed if the string is empty
+func (site *SiteYaml) FaviconPath() string { return site.FaviconPathField }
+
+// GRef returns a consistent reference to the Google Sites instance
 func (s *SiteYaml) GRef() string {
 	if !strings.Contains(s.Ref(), "/") {
 		return "view/" + s.Ref()
-	} else {
-		return s.Ref()
 	}
+	return s.Ref()
 }
 
+// IPHeader returns the HTTP header containing the ip of the requester, if empty this information will
+// be taken from the connection directly
 func (site *SiteYaml) IPHeader() string {
 	if site.FrontProxyField != nil {
 		return site.FrontProxyField.IPHeader
-	} else {
-		return ""
 	}
+	return ""
 }
 
 func LoadConfig(filename string) func() (Configuration, error) {
