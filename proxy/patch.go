@@ -13,7 +13,7 @@ func patchLinks(input []byte, site config.Site) []byte {
 	return bytes.Replace(input, []byte("\"/"+site.GRef()), []byte("\""), -1)
 }
 
-func newPatcher(site config.Site, context *SiteContext) func(*Page) *Page {
+func newPatcher(site config.Site, context *siteContext) func(*Page) *Page {
 	var htmlRx, _ = regexp.Compile("text/html($|;.*)")
 	patchLinks := func(input *Page) *Page {
 		if !site.KeepLinks() && htmlRx.MatchString(input.Headers["Content-Type"]) {

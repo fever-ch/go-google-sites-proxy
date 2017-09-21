@@ -16,12 +16,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-type SiteContext struct {
+type siteContext struct {
 	Site    *config.SiteYaml
 	Favicon *Page
 }
 
-func retrieveF(site config.Site) func(url string) (*http.Response, error) {
+func retrieveF(site config.Site) func(string) (*http.Response, error) {
 	googleSitePathRoot := "https://sites.google.com/" + site.GRef()
 
 	return func(url string) (*http.Response, error) {
@@ -43,7 +43,7 @@ func retrieveF(site config.Site) func(url string) (*http.Response, error) {
 	}
 }
 
-func respToPageF(site config.Site, siteContext *SiteContext) func(resp *http.Response) *Page {
+func respToPageF(site config.Site, siteContext *siteContext) func(*http.Response) *Page {
 	var htmlRx, _ = regexp.Compile("text/html($|;.*)")
 	patcher := newPatcher(site, siteContext)
 
@@ -77,8 +77,8 @@ func respToPageF(site config.Site, siteContext *SiteContext) func(resp *http.Res
 	}
 }
 
-func renderPageF() func(page *Page, responseWriter http.ResponseWriter, gzipSupport bool) int {
-	return func(page *Page, responseWriter http.ResponseWriter, gzipSupport bool) int {
+func renderPageF() func(*Page, http.ResponseWriter, bool) {
+	return func(page *Page, responseWriter http.ResponseWriter, gzipSupport bool) {
 		var buff []byte
 		if page.OriginallyGziped && gzipSupport {
 			responseWriter.Header().Set("Content-Encoding", "gzip")
@@ -95,17 +95,17 @@ func renderPageF() func(page *Page, responseWriter http.ResponseWriter, gzipSupp
 
 		responseWriter.WriteHeader(page.Code)
 		responseWriter.Header().Set("Content-Length", strconv.Itoa(len(buff)))
-		responseWriter.Write(buff)
-		return page.Code
+		_, e := responseWriter.Write(buff)
+		if e != nil {
+			log.WithError(e).Warn("Unable to write response to client")
+		}
+
 	}
 }
 
-
-
-// Get site handler for a given site
+// GetSiteHandler returns a function that will handle calls to this site
 func GetSiteHandler(site config.Site) *func(responseWriter http.ResponseWriter, request *http.Request) {
-	siteContext := &SiteContext{}
-
+	siteContext := &siteContext{}
 
 	if site.FaviconPath() != "" {
 		buf, err := ioutil.ReadFile(site.FaviconPath())
@@ -123,7 +123,6 @@ func GetSiteHandler(site config.Site) *func(responseWriter http.ResponseWriter, 
 	respToPage := respToPageF(site, siteContext)
 
 	renderPage := renderPageF()
-
 
 	// The actual handler that will get the request for this site
 	handleRequest := func(responseWriter http.ResponseWriter, request *http.Request) {
@@ -146,7 +145,8 @@ func GetSiteHandler(site config.Site) *func(responseWriter http.ResponseWriter, 
 					page = respToPage(gsitesResponse)
 				}
 
-				code = renderPage(page, responseWriter, strings.Contains(request.Header.Get("Content-Encoding"), "gzip"))
+				renderPage(page, responseWriter, strings.Contains(request.Header.Get("Content-Encoding"), "gzip"))
+				code = page.Code
 
 			default:
 			}
