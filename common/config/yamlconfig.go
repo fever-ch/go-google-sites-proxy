@@ -19,7 +19,7 @@ type ConfigurationYaml struct {
 type SiteYaml struct {
 	RefField         string          `yaml:"ref"`
 	HostField        string          `yaml:"host"`
-	DescriptionField string          `yaml:"description""`
+	DescriptionField string          `yaml:"description"`
 	RedirectsField   []string        `yaml:"redirects"`
 	LanguageField    string          `yaml:"language"`
 	KeepLinksField   bool            `yaml:"keeplinks"`
