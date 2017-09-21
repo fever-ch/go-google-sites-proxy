@@ -15,14 +15,12 @@ type HybridRawGzipBlob struct {
 }
 
 func NewRawBlob(raw []byte) HybridRawGzipBlob {
-	var gzipped []byte;
+	var gzipped []byte
 	return HybridRawGzipBlob{
 
-		Raw:
-		func() []byte { return raw },
-		Gzipped:
-		func() []byte {
-			if (gzipped == nil) {
+		Raw: func() []byte { return raw },
+		Gzipped: func() []byte {
+			if gzipped == nil {
 				var bbb bytes.Buffer
 				gz := gzip.NewWriter(&bbb)
 				gz.Write(raw)
@@ -36,11 +34,10 @@ func NewRawBlob(raw []byte) HybridRawGzipBlob {
 }
 
 func NewGzippedBlob(gzipped []byte) HybridRawGzipBlob {
-	var raw []byte;
+	var raw []byte
 	return HybridRawGzipBlob{
 
-		Raw:
-		func() []byte {
+		Raw: func() []byte {
 			if raw == nil {
 				r, _ := gzip.NewReader(bytes.NewBuffer(gzipped))
 				var resB bytes.Buffer
@@ -49,6 +46,5 @@ func NewGzippedBlob(gzipped []byte) HybridRawGzipBlob {
 			}
 			return raw
 		},
-		Gzipped:
-		func() []byte { return gzipped }}
+		Gzipped: func() []byte { return gzipped }}
 }

@@ -5,9 +5,9 @@
 package blob
 
 import (
-	"testing"
-	"github.com/stretchr/testify/assert"
 	"bytes"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 // Build a byte-array of one megabyte

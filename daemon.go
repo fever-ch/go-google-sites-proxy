@@ -5,17 +5,17 @@
 package main
 
 import (
-	"os"
-	"github.com/fever-ch/go-google-sites-proxy/proxy"
-	log "github.com/sirupsen/logrus"
-	"os/signal"
-	"syscall"
 	"fmt"
 	"github.com/fever-ch/go-google-sites-proxy/common/config"
+	"github.com/fever-ch/go-google-sites-proxy/proxy"
+	log "github.com/sirupsen/logrus"
+	"os"
+	"os/signal"
 	"path/filepath"
+	"syscall"
 )
 
-func startDaemonFromFile(confFile string){
+func startDaemonFromFile(confFile string) {
 	os.Chdir(filepath.Dir(confFile))
 	startDaemon(config.LoadConfig(confFile))
 }

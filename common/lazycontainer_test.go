@@ -5,13 +5,13 @@
 package common
 
 import (
-	"testing"
 	"github.com/stretchr/testify/assert"
+	"testing"
 
 	"strconv"
 	"sync"
-	"time"
 	"sync/atomic"
+	"time"
 	"unsafe"
 )
 
@@ -30,10 +30,15 @@ func TestLazyContainer(t *testing.T) {
 	for i := 0; i < entries+extra; i++ {
 		z := i
 		containers[i] = NewLazyContainer(
-			func() unsafe.Pointer { time.Sleep(5 * time.Millisecond); pt := strconv.Itoa(z); atomic.AddInt32(&computations, 1); return unsafe.Pointer(&pt) })
+			func() unsafe.Pointer {
+				time.Sleep(5 * time.Millisecond)
+				pt := strconv.Itoa(z)
+				atomic.AddInt32(&computations, 1)
+				return unsafe.Pointer(&pt)
+			})
 	}
 
-	for i := 0; i < entries; i+=2 {
+	for i := 0; i < entries; i += 2 {
 		for j := 0; j < iterations; j++ {
 			wg.Add(1)
 			go func(idx int) {

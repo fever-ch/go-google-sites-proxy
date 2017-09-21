@@ -5,11 +5,11 @@
 package proxy
 
 import (
-	"strconv"
+	"github.com/fever-ch/go-google-sites-proxy/common/config"
 	"net/http"
+	"strconv"
 	"sync/atomic"
 	"unsafe"
-	"github.com/fever-ch/go-google-sites-proxy/common/config"
 )
 
 type Context struct {

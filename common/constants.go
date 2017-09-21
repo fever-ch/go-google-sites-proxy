@@ -9,11 +9,9 @@ type ProgramInfoStruct struct {
 	Fullname   string
 	Version    string
 	Git        string
-	BuildDate string
+	BuildDate  string
 	ProjectUrl string
 }
-
-
 
 var ProgramInfo = ProgramInfoStruct{"GSSP",
 	"Go Google Site Proxy",

@@ -10,14 +10,14 @@ import (
 
 	"io/ioutil"
 
+	"github.com/fever-ch/go-google-sites-proxy/blob"
 	"net/http"
 	"regexp"
 	"strings"
-	"github.com/fever-ch/go-google-sites-proxy/blob"
 
-	log "github.com/sirupsen/logrus"
 	"fmt"
 	"github.com/fever-ch/go-google-sites-proxy/common/config"
+	log "github.com/sirupsen/logrus"
 )
 
 type SiteContext struct {

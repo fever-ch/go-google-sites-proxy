@@ -5,10 +5,10 @@
 package main
 
 import (
-	"os"
-	log "github.com/sirupsen/logrus"
-	"github.com/fever-ch/go-google-sites-proxy/common"
 	"fmt"
+	"github.com/fever-ch/go-google-sites-proxy/common"
+	log "github.com/sirupsen/logrus"
+	"os"
 )
 
 var GitVersion = ""

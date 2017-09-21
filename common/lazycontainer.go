@@ -6,8 +6,8 @@ package common
 
 import (
 	"sync"
-	"unsafe"
 	"sync/atomic"
+	"unsafe"
 )
 
 type LazyContainer struct {
@@ -15,7 +15,7 @@ type LazyContainer struct {
 }
 
 const (
-	EMPTY         uint32 = iota
+	EMPTY uint32 = iota
 	GETTING_READY
 	READY
 )

@@ -6,15 +6,15 @@ package proxy
 
 import (
 	"bytes"
-	"regexp"
 	"github.com/fever-ch/go-google-sites-proxy/blob"
-	"strconv"
-	"github.com/fever-ch/go-google-sites-proxy/utils"
 	"github.com/fever-ch/go-google-sites-proxy/common/config"
+	"github.com/fever-ch/go-google-sites-proxy/utils"
+	"regexp"
+	"strconv"
 )
 
-func patchLinks(input [] byte, site config.Site) []byte {
-	return bytes.Replace(input, []byte( "\"/"+site.GRef()), []byte( "\""), -1)
+func patchLinks(input []byte, site config.Site) []byte {
+	return bytes.Replace(input, []byte("\"/"+site.GRef()), []byte("\""), -1)
 }
 
 func newPatcher(site config.Site, context *SiteContext) func(*Page) *Page {
@@ -23,7 +23,7 @@ func newPatcher(site config.Site, context *SiteContext) func(*Page) *Page {
 		if !site.KeepLinks() && htmlRx.MatchString(input.Headers["Content-Type"]) {
 			return &Page{input.Code,
 				input.Headers,
-				blob.NewRawBlob(bytes.Replace(input.Blob.Raw(), []byte( "\"/"+site.GRef()), []byte( "\""), -1)),
+				blob.NewRawBlob(bytes.Replace(input.Blob.Raw(), []byte("\"/"+site.GRef()), []byte("\""), -1)),
 				input.OriginallyGziped}
 		} else {
 			return input
