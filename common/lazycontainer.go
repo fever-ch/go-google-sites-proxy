@@ -18,7 +18,7 @@ const (
 	ready
 )
 
-// NewLazyContainer returns a LazyContainer that will contain the result of the given fonction 
+// NewLazyContainer returns a LazyContainer that will contain the result of the given fonction
 func NewLazyContainer(f func() unsafe.Pointer) *LazyContainer {
 	lc := LazyContainer{}
 	var content unsafe.Pointer

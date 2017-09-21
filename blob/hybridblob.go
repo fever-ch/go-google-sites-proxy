@@ -5,13 +5,13 @@ import (
 	"compress/gzip"
 )
 
-// Hybrid blob that can gives its content in raw or gzipped form
+// HybridRawGzipBlob is an hybrid blob that can gives its content in raw or gzipped form
 type HybridRawGzipBlob struct {
 	Raw     func() []byte
 	Gzipped func() []byte
 }
 
-// Build a new hybrid blob from a raw form
+// NewRawBlob returns a new hybrid blob from a raw form
 func NewRawBlob(raw []byte) HybridRawGzipBlob {
 	var gzipped []byte
 	return HybridRawGzipBlob{
@@ -32,7 +32,7 @@ func NewRawBlob(raw []byte) HybridRawGzipBlob {
 		}}
 }
 
-// Build a new hybrid blob from a gzipped form
+// NewGzippedBlob returns a new hybrid blob from a gzipped form
 func NewGzippedBlob(gzipped []byte) HybridRawGzipBlob {
 	var raw []byte
 	return HybridRawGzipBlob{
