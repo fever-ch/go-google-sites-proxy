@@ -21,9 +21,10 @@ func NewRawBlob(raw []byte) HybridRawGzipBlob {
 			if gzipped == nil {
 				var bbb bytes.Buffer
 				gz := gzip.NewWriter(&bbb)
-				gz.Write(raw)
-				gz.Flush()
-				gz.Close()
+				_, e := gz.Write(raw)
+				if e != nil || gz.Flush() != nil || gz.Close() != nil {
+					return make([]byte, 0)
+				}
 
 				gzipped = bbb.Bytes()
 			}
@@ -38,9 +39,15 @@ func NewGzippedBlob(gzipped []byte) HybridRawGzipBlob {
 
 		Raw: func() []byte {
 			if raw == nil {
-				r, _ := gzip.NewReader(bytes.NewBuffer(gzipped))
+				r, e := gzip.NewReader(bytes.NewBuffer(gzipped))
+				if e != nil {
+					return make([]byte, 0)
+				}
 				var resB bytes.Buffer
-				resB.ReadFrom(r)
+				_, e = resB.ReadFrom(r)
+				if e != nil {
+					return make([]byte, 0)
+				}
 				raw = resB.Bytes()
 			}
 			return raw
