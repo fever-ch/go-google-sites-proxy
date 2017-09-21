@@ -54,7 +54,7 @@ func GetSiteHandler(site config.Site) *func(responseWriter http.ResponseWriter, 
 		req.Header.Set("Accept-Encoding", "gzip")
 		gsitesResponse, err := netClient.Do(req)
 		if err != nil {
-			log.Error("Unable to retrieve page on Google Sites: %v", err)
+			log.WithError(err).Error("Unable to retrieve page on Google Sites")
 		}
 		return gsitesResponse, err
 	}
