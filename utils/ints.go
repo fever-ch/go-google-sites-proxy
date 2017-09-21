@@ -1,7 +1,5 @@
 package utils
 
-import "time"
-
 // MaxUint is the maximum unsigned int
 const MaxUint = ^uint(0)
 
@@ -49,15 +47,3 @@ const MaxInt64 = int64(MaxUint64 >> 1)
 
 // MinInt64 is the minimum signed int64
 const MinInt64 = -MaxInt64 - 1
-
-// Unix returns t as a Unix time, the number of nanoseconds elapsed
-// since January 1, 1970 UTC.
-func EpochNano() int64 {
-	return time.Now().UnixNano()
-}
-
-// Unix returns t as a Unix time, the number of seconds elapsed
-// since January 1, 1970 UTC.
-func Epoch() int64 {
-	return time.Now().Unix()
-}
