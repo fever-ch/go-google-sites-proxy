@@ -1,5 +1,7 @@
 # Go Google Sites Proxy
 [![Go Report Card](https://goreportcard.com/badge/github.com/fever-ch/go-google-sites-proxy)](https://goreportcard.com/report/github.com/fever-ch/go-google-sites-proxy)
+[![Build Status](https://travis-ci.org/fever-ch/go-google-sites-proxy.svg)](https://travis-ci.org/fever-ch/go-google-sites-proxy)
+[![license](http://img.shields.io/badge/license-GPL3-green.svg?style=flat)](https://raw.githubusercontent.com/fever-ch/go-google-sites-proxy/master/LICENSE)
 
 
 Project homepage: [https://ggsp.fever.ch](https://ggsp.fever.ch)
