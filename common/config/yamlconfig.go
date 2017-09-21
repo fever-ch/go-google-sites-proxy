@@ -13,7 +13,7 @@ import (
 type ConfigurationYaml struct {
 	PortField  uint16  `yaml:"port"`
 	SitesField []*SiteYaml `yaml:"sites"`
-	IndexField bool    `yaml:index`
+	IndexField bool    `yaml:"index"`
 }
 
 type SiteYaml struct {
