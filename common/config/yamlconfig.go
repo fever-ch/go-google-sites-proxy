@@ -87,7 +87,7 @@ func (site *SiteYaml) IPHeader() string {
 }
 
 // LoadConfig returns a loader for a given YAML configuration file
-func LoadConfig(filename string) func() (Configuration, error) {
+func NewYamlConfigLoader(filename string) ConfigLoader {
 	return func() (Configuration, error) {
 		bytes, err := ioutil.ReadFile(filename)
 		if err != nil {

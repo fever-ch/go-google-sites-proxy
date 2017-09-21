@@ -1,11 +1,13 @@
 package config
 
+// Configuration represents the setup of the whole GGSP
 type Configuration interface {
 	Sites() []Site
 	Index() bool
 	Port() uint16
 }
 
+// Site represents the settings of a specific site
 type Site interface {
 	Ref() string
 	Host() string
@@ -19,4 +21,6 @@ type Site interface {
 	IPHeader() string
 }
 
+// ConfigLoader is a function that can load a configuration from
+// specific manner, i.e. YamlLoadConfig
 type ConfigLoader func() (Configuration, error)

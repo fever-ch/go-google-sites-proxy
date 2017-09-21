@@ -13,7 +13,7 @@ import (
 
 func startDaemonFromFile(confFile string) {
 	os.Chdir(filepath.Dir(confFile))
-	startDaemon(config.LoadConfig(confFile))
+	startDaemon(config.NewYamlConfigLoader(confFile))
 }
 
 func startDaemon(cl config.ConfigLoader) {
@@ -21,7 +21,7 @@ func startDaemon(cl config.ConfigLoader) {
 	if cfg, err := cl(); err != nil {
 		log.WithError(err).Fatal("Unable to load configuration")
 	} else {
-		proxy := proxy.NewCheapProxy(cfg.Port())
+		proxy := proxy.NewSmartProxy(cfg.Port())
 		proxy.SetConfiguration(cfg)
 
 		startUp := func() {

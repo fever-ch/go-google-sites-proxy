@@ -21,9 +21,8 @@ func newPatcher(site config.Site, context *siteContext) func(*Page) *Page {
 				input.Headers,
 				blob.NewRawBlob(bytes.Replace(input.Blob.Raw(), []byte("\"/"+site.GRef()), []byte("\""), -1)),
 				input.OriginallyGziped}
-		} else {
-			return input
 		}
+			return input
 	}
 
 	ep := int(utils.Epoch())
@@ -38,9 +37,8 @@ func newPatcher(site config.Site, context *siteContext) func(*Page) *Page {
 					-1)),
 
 				input.OriginallyGziped}
-		} else {
-			return input
 		}
+			return input
 	}
 
 	return func(input *Page) *Page {

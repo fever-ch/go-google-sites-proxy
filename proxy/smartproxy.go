@@ -8,16 +8,17 @@ import (
 	"unsafe"
 )
 
-type Context struct {
+type context struct {
 	configuration config.Configuration
 	sites         map[string]*func(responseWriter http.ResponseWriter, request *http.Request)
 }
 
-func NewCheapProxy(port uint16) *SmartProxy {
+// NewSmartProxy returns a smartProxy listening to a given TCP port
+func NewSmartProxy(port uint16) *smartProxy {
 
-	buildContext := func(configuration config.Configuration) *Context {
+	buildContext := func(configuration config.Configuration) *context {
 
-		context := Context{
+		ctx := context{
 			configuration,
 			make(map[string]*func(responseWriter http.ResponseWriter, request *http.Request))}
 
@@ -34,18 +35,18 @@ func NewCheapProxy(port uint16) *SmartProxy {
 				return &redirectHandler
 			}
 
-			context.sites[e.Host()] = GetSiteHandler(e)
+			ctx.sites[e.Host()] = GetSiteHandler(e)
 			for _, f := range e.Redirects() {
-				context.sites[f] = addRedirect(f, e.Host())
+				ctx.sites[f] = addRedirect(f, e.Host())
 			}
 		}
-		return &context
+		return &ctx
 	}
 
-	var context unsafe.Pointer
+	var ctx unsafe.Pointer
 
 	handler := func(responseWriter http.ResponseWriter, request *http.Request) {
-		ctx := (*Context)(atomic.LoadPointer(&context))
+		ctx := (*context)(atomic.LoadPointer(&ctx))
 		siteHandler := ctx.sites[request.Host]
 		if siteHandler != nil {
 			(*siteHandler)(responseWriter, request)
@@ -54,9 +55,9 @@ func NewCheapProxy(port uint16) *SmartProxy {
 		}
 	}
 
-	return &SmartProxy{
+	return &smartProxy{
 		SetConfiguration: func(configuration config.Configuration) {
-			atomic.StorePointer(&context, unsafe.Pointer(buildContext(configuration)))
+			atomic.StorePointer(&ctx, unsafe.Pointer(buildContext(configuration)))
 		},
 		Port: func() uint16 { return port },
 		Start: func() error {
@@ -66,7 +67,7 @@ func NewCheapProxy(port uint16) *SmartProxy {
 	}
 }
 
-type SmartProxy struct {
+type smartProxy struct {
 	Start            func() error
 	SetConfiguration func(config.Configuration)
 	Port             func() uint16
