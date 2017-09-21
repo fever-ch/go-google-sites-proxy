@@ -21,31 +21,14 @@ type SiteContext struct {
 	Favicon *Page
 }
 
-// Get site handler for a given site
-func GetSiteHandler(site config.Site) *func(responseWriter http.ResponseWriter, request *http.Request) {
-	siteContext := &SiteContext{}
-
-	if site.FaviconPath() != "" {
-		buf, err := ioutil.ReadFile(site.FaviconPath())
-		if err == nil {
-			h := make(map[string](string))
-			h["Content-Type"] = "image/x-icon"
-			siteContext.Favicon = &Page{200, h, blob.NewRawBlob(buf), true}
-		} else {
-			log.WithError(err).Warning(fmt.Sprintf("Failed to load favicon for site %v", site.Host))
-		}
-	}
-
-	var htmlRx, _ = regexp.Compile("text/html($|;.*)")
-
+func retrieveF(site config.Site) func(url string) (*http.Response, error) {
 	googleSitePathRoot := "https://sites.google.com/" + site.GRef()
 
-	patcher := newPatcher(site, siteContext)
-
-	retrieve := func(url string) (*http.Response, error) {
+	return func(url string) (*http.Response, error) {
 		var netClient = &http.Client{
 			Timeout: time.Second * 10,
 		}
+
 		req, _ := http.NewRequest("GET", googleSitePathRoot+url, nil)
 		if site.Language() != "" {
 			req.Header.Set("Accept-LanguageField", site.Language())
@@ -58,31 +41,13 @@ func GetSiteHandler(site config.Site) *func(responseWriter http.ResponseWriter, 
 		}
 		return gsitesResponse, err
 	}
+}
 
-	// Render a page object
-	renderPage := func(page *Page, responseWriter http.ResponseWriter, gzipSupport bool) int {
-		var buff []byte
-		if page.OriginallyGziped && gzipSupport {
-			responseWriter.Header().Set("Content-Encoding", "gzip")
-			buff = page.Blob.Gzipped()
-		} else {
-			buff = page.Blob.Raw()
-		}
+func respToPageF(site config.Site, siteContext *SiteContext) func(resp *http.Response) *Page {
+	var htmlRx, _ = regexp.Compile("text/html($|;.*)")
+	patcher := newPatcher(site, siteContext)
 
-		for key, value := range page.Headers {
-			if value != "" {
-				responseWriter.Header().Set(key, value)
-			}
-		}
-
-		responseWriter.WriteHeader(page.Code)
-		responseWriter.Header().Set("Content-Length", strconv.Itoa(len(buff)))
-		responseWriter.Write(buff)
-		return page.Code
-	}
-
-	// Convert response to page object
-	respToPage := func(resp *http.Response) *Page {
+	return func(resp *http.Response) *Page {
 		headers := make(map[string](string))
 
 		selectedHeaders := []string{"Content-Type", "Date", "Expires"}
@@ -110,6 +75,55 @@ func GetSiteHandler(site config.Site) *func(responseWriter http.ResponseWriter, 
 
 		return patcher(&Page{resp.StatusCode, headers, body, gzipped})
 	}
+}
+
+func renderPageF() func(page *Page, responseWriter http.ResponseWriter, gzipSupport bool) int {
+	return func(page *Page, responseWriter http.ResponseWriter, gzipSupport bool) int {
+		var buff []byte
+		if page.OriginallyGziped && gzipSupport {
+			responseWriter.Header().Set("Content-Encoding", "gzip")
+			buff = page.Blob.Gzipped()
+		} else {
+			buff = page.Blob.Raw()
+		}
+
+		for key, value := range page.Headers {
+			if value != "" {
+				responseWriter.Header().Set(key, value)
+			}
+		}
+
+		responseWriter.WriteHeader(page.Code)
+		responseWriter.Header().Set("Content-Length", strconv.Itoa(len(buff)))
+		responseWriter.Write(buff)
+		return page.Code
+	}
+}
+
+
+
+// Get site handler for a given site
+func GetSiteHandler(site config.Site) *func(responseWriter http.ResponseWriter, request *http.Request) {
+	siteContext := &SiteContext{}
+
+
+	if site.FaviconPath() != "" {
+		buf, err := ioutil.ReadFile(site.FaviconPath())
+		if err == nil {
+			h := make(map[string](string))
+			h["Content-Type"] = "image/x-icon"
+			siteContext.Favicon = &Page{200, h, blob.NewRawBlob(buf), true}
+		} else {
+			log.WithError(err).Warning(fmt.Sprintf("Failed to load favicon for site %v", site.Host))
+		}
+	}
+
+	retrieve := retrieveF(site)
+
+	respToPage := respToPageF(site, siteContext)
+
+	renderPage := renderPageF()
+
 
 	// The actual handler that will get the request for this site
 	handleRequest := func(responseWriter http.ResponseWriter, request *http.Request) {
