@@ -14,4 +14,4 @@ type ProgramInfoStruct struct {
 var ProgramInfo = ProgramInfoStruct{"GSSP",
 	"Go Google Site Proxy",
 	"0.0.1-SNAPSHOT",
-	"https://www.github.com/fever-ch/go-google-sites-proxy"}
+	"https://ggsp.fever.ch"}
