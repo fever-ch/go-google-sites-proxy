@@ -1,5 +1,5 @@
 # Go Google Sites Proxy
-[![Go Report Card](https://goreportcard.com/badge/github.com/rbarazzutti/go-google-sites-proxy)](https://goreportcard.com/report/github.com/rbarazzutti/go-google-sites-proxy)
+[![Go Report Card](https://goreportcard.com/badge/github.com/fever-ch/go-google-sites-proxy)](https://goreportcard.com/report/github.com/fever-ch/go-google-sites-proxy)
 
 
 Project homepage: [https://ggsp.fever.ch](https://ggsp.fever.ch)
