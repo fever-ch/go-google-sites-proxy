@@ -2,7 +2,7 @@ FROM golang:1.9
 
 ADD . /go/src/github.com/fever-ch/go-google-sites-proxy
 WORKDIR /go/src/github.com/fever-ch/go-google-sites-proxy
-RUN go get ./...; CGO_ENABLED=0 GOOS=linux go build -ldflags="-X main.GitVersion=$(git describe --always --long --dirty) -X main.BuildDate=$(date +%Y-%m-%d/%H:%M:%S)" -a -installsuffix cgo
+RUN go get ./...; go build -ldflags="-X main.GitVersion=$(git describe --always --long --dirty) -X main.BuildDate=$(date +%Y-%m-%d/%H:%M:%S)"
 EXPORT /go/src/github.com/fever-ch/go-google-sites-proxy/go-google-sites-proxy /go-google-sites-proxy
 
 

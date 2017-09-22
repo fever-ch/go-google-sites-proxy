@@ -7,18 +7,16 @@ import (
 	"os"
 )
 
-// GitVersion is a variable representing the version of the repo at build time (set with -X)
-var GitVersion = ""
+var gitVersion = ""
 
-// BuildDate is the date at the time the software was compiled (set with -X)
-var BuildDate = ""
+var buildDate = ""
 
 func main() {
-	if GitVersion != "" {
-		common.ProgramInfo.Git = GitVersion
+	if gitVersion != "" {
+		common.ProgramInfo.Git = gitVersion
 	}
-	if BuildDate != "" {
-		common.ProgramInfo.BuildDate = BuildDate
+	if buildDate != "" {
+		common.ProgramInfo.BuildDate = buildDate
 	}
 	log.Info(fmt.Sprintf("GGSP %s %s", common.ProgramInfo.Git, common.ProgramInfo.BuildDate))
 
