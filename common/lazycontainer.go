@@ -13,7 +13,7 @@ type LazyContainer struct {
 }
 
 const (
-	empty        uint32 = iota
+	empty uint32 = iota
 	gettingReady
 	ready
 )
