@@ -30,7 +30,7 @@ func retrieveF(site config.Site) func(string) (*http.Response, error) {
 
 		req, _ := http.NewRequest("GET", googleSitePathRoot+url, nil)
 		if site.Language() != "" {
-			req.Header.Set("Accept-LanguageField", site.Language())
+			req.Header.Set("Accept-Language", site.Language())
 		}
 
 		req.Header.Set("Accept-Encoding", "gzip")
