@@ -8,7 +8,6 @@ import (
 
 	"github.com/fever-ch/go-google-sites-proxy/blob"
 	"net/http"
-	"regexp"
 	"strings"
 
 	"fmt"
@@ -44,7 +43,6 @@ func retrieveF(site config.Site) func(string) (*http.Response, error) {
 }
 
 func respToPageF(site config.Site, siteContext *siteContext) func(*http.Response) *Page {
-	var htmlRx, _ = regexp.Compile("text/html($|;.*)")
 	patcher := newPatcher(site, siteContext)
 
 	return func(resp *http.Response) *Page {
@@ -67,10 +65,6 @@ func respToPageF(site config.Site, siteContext *siteContext) func(*http.Response
 			body = blob.NewGzippedBlob(b)
 		} else {
 			body = blob.NewRawBlob(b)
-		}
-
-		if !site.KeepLinks() && htmlRx.MatchString(headers["Content-Type"]) {
-			body = blob.NewRawBlob(patchLinks(body.Raw(), site))
 		}
 
 		return patcher(&Page{resp.StatusCode, headers, body, gzipped})
