@@ -2,5 +2,11 @@ language: go
 go:
  - 1.9
 
+go_import_path: github.com/fever-ch/go-google-sites-proxy
+
+
+install:
+ - go get -t ./...
+
 script:
- - go test -v ./...
+ - go test ./...
