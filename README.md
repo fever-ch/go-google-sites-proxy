@@ -1,8 +1,8 @@
 # Go Google Sites Proxy
+
 [![Go Report Card](https://goreportcard.com/badge/github.com/fever-ch/go-google-sites-proxy)](https://goreportcard.com/report/github.com/fever-ch/go-google-sites-proxy)
 [![Build Status](https://travis-ci.org/fever-ch/go-google-sites-proxy.svg)](https://travis-ci.org/fever-ch/go-google-sites-proxy)
 [![license](http://img.shields.io/badge/license-GPL3-brightgreen.svg?style=flat)](https://raw.githubusercontent.com/fever-ch/go-google-sites-proxy/master/LICENSE)
-
 
 Project homepage: [https://ggsp.fever.ch](https://ggsp.fever.ch)
 
@@ -37,7 +37,6 @@ sites:
 
 - add cache for the retrieved content
 
-
 ## How to install 
 
 ### Build from sources
@@ -49,14 +48,11 @@ Fetch sources and build it:
 
 Once the `get` completes, you should find your new `go-google-sites-proxy` (or `go-google-sites-proxy.exe`) executable sitting inside `$GOPATH/bin/`.
 
-
 ### Execute it
 
 Create your own configuration file (formatted in yaml). This project contains an example named `config-example.yaml`([link](https://github.com/fever-ch/go-google-sites-proxy/blob/master/config-example.yaml)). 
 
     nohup $GOPATH/bin/go-google-sites-proxy my-custom-config.yaml &
-
-
 
 ## Use it with Docker :
 
@@ -65,18 +61,13 @@ Let's assume that the configuration file (```config.yaml```) is in ```my-config-
     docker pull feverch/go-google-sites-proxy
     docker run -d --name containerName -v /full-path/to/my-config-folder:/etc/ggsp/ -p 80:9080 feverch/go-google-sites-proxy
 
+### Build your own image with Docker
+    docker build .
 
-
-#### Build your own image with Rocker
-    rocker build .
-
-This project migrated to [Rocker](https://github.com/grammarly/rocker) for builds. It allows the creation of much slimmer images (no layered images with all compilation/build steps). Thanks to Rocker the image is now smaller than 10mb!
-
-This change has no impact for users of the image (no need to install Rocker). 
+Historically this project container's image was built with [Rocker](https://github.com/grammarly/rocker). Sadly Docker project has discontinued, but on the other hand, Docker implemented many of the exiting features that were brought by Rocker.
 
 ## HTTPS, HTTP/2.0 support
 
 `Go Google Sites Proxy` doesn't support yet, and might never, HTTPS and HTTP/2.0 protocols. Since these protocols are nowadays *a must*, but on the other hand, they require fine tuning, a clever approach would be to use [NGINX](https://www.nginx.org) [(docker image)](https://hub.docker.com/_/nginx/) or to use a well-known service such that [CloudFlare](https://www.cloudflare.com). 
 
-
-2017 fever.ch - Raphaël P. Barazzutti 
+2017-2018 fever.ch - Raphaël P. Barazzutti 
